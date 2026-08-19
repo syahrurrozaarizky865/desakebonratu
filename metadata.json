@@ -1,0 +1,6 @@
+{
+  "name": "Desa Kebonratu",
+  "description": "Website Profil Resmi Desa Kebonratu, Kecamatan Lebakwangi, Banten. Dilengkapi Layanan Mandiri, Data Transparansi APBDes, Potensi Desa, dan Dashboard Admin.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
