@@ -119,8 +119,8 @@ export interface BumdesItem {
   kontak: string;
   pemilik: string;
   gambar: string;
-  latitude: string;
-  longitude: string;
+  latitude?: string | null;
+  longitude?: string | null;
 }
 
 export interface SuratRequest {

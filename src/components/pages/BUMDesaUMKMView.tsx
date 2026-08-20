@@ -1,100 +1,37 @@
-
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { HERO_IMAGE } from '../../data/initialData';
-import { PotensiItem } from '../../types';
-import { MapPin, Phone, X } from 'lucide-react';
+import { BumdesItem, PotensiItem } from '../../types';
+import { MapPin, MessageCircle, Package, Phone, UserRound, X } from 'lucide-react';
+
+type CatalogItem = { id: string; name: string; category: string; description: string; image: string; location: string; contact?: string; manager?: string; detail?: string };
+
+const toCatalogItem = (item: PotensiItem | BumdesItem): CatalogItem => {
+  const isBumdes = 'jenis_usaha' in item;
+  return { id: item.id, name: item.nama, category: isBumdes ? item.jenis_usaha : 'Produk UMKM', description: item.deskripsi, image: item.gambar, location: isBumdes ? item.alamat : item.lokasi, contact: isBumdes ? item.kontak : item.kontakWA, manager: item.pemilik, detail: isBumdes ? 'Unit Usaha BUMDesa' : item.hargaRange };
+};
+
+const whatsappUrl = (contact: string | undefined, name: string) => {
+  const phone = (contact ?? '').replace(/\D/g, '').replace(/^0/, '62');
+  return `https://wa.me/${phone}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${name}.`)}`;
+};
 
 export const BUMDesaUMKMView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'bumdesa' | 'umkm'>('bumdesa');
-  const [selectedUmkm, setSelectedUmkm] = useState<PotensiItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CatalogItem | null>(null);
   const { potensiList, bumdesList } = useApp();
+  const list = activeTab === 'bumdesa' ? bumdesList.map(toCatalogItem) : potensiList.filter((item) => item.kategori === 'UMKM').map(toCatalogItem);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      {/* Hero */}
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-        <img src={HERO_IMAGE} alt="BUMDesa & UMKM" className="w-full h-44 sm:h-56 object-cover brightness-75" />
-        <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center justify-between gap-6">
-              <div>
-                <h1 className="text-white text-2xl sm:text-3xl font-extrabold">BUMDesa & UMKM</h1>
-                <p className="text-white/90 text-sm mt-1">Produk unggulan masyarakat Desa Kebonratu — utamakan foto produk sebagai etalase.</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setActiveTab('bumdesa')} className={`px-4 py-2 rounded-full text-sm font-semibold ${activeTab === 'bumdesa' ? 'bg-emerald-700 text-white' : 'bg-white/90 text-emerald-700'}`}>BUMDesa</button>
-                <button onClick={() => setActiveTab('umkm')} className={`px-4 py-2 rounded-full text-sm font-semibold ${activeTab === 'umkm' ? 'bg-emerald-700 text-white' : 'bg-white/90 text-emerald-700'}`}>UMKM Desa</button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
+      <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+        <img src={HERO_IMAGE} alt="BUMDesa dan UMKM" className="h-44 w-full object-cover brightness-75 sm:h-56" />
+        <div className="absolute inset-0 flex items-center"><div className="w-full px-5 sm:px-8"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center"><div><h1 className="text-2xl font-extrabold text-white sm:text-3xl">BUMDesa & UMKM</h1><p className="mt-1 text-sm text-white/90">Katalog produk dan unit usaha Desa Kebonratu.</p></div><div className="flex gap-2"><button onClick={() => setActiveTab('bumdesa')} className={`rounded-full px-4 py-2 text-sm font-semibold ${activeTab === 'bumdesa' ? 'bg-emerald-700 text-white' : 'bg-white/90 text-emerald-700'}`}>BUMDesa</button><button onClick={() => setActiveTab('umkm')} className={`rounded-full px-4 py-2 text-sm font-semibold ${activeTab === 'umkm' ? 'bg-emerald-700 text-white' : 'bg-white/90 text-emerald-700'}`}>UMKM Desa</button></div></div></div></div>
       </div>
 
-      <div className="space-y-6">
-        <div className="space-y-6">
-          {/* BUMDesa Tab */}
-          {activeTab === 'bumdesa' && (
-            <div className="space-y-6">
-              {bumdesList.length === 0 ? <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/50 p-12 text-center text-sm text-slate-500">Belum ada data BUMDes yang dipublikasikan.</div> : bumdesList.map((bumdes) => {
-                const locationUrl = `https://www.google.com/maps/search/?api=1&query=${bumdes.latitude},${bumdes.longitude}`;
-                return <div key={bumdes.id} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-md"><div className="flex flex-col md:flex-row items-center gap-4">{bumdes.gambar && <img src={bumdes.gambar} alt={bumdes.nama} className="w-full md:w-1/3 h-44 object-cover rounded-lg shadow" />}<div className="flex-1"><h3 className="text-2xl font-extrabold text-emerald-800">{bumdes.nama}</h3><p className="text-xs font-bold uppercase tracking-wide text-emerald-600 mt-1">{bumdes.jenis_usaha}</p><p className="text-sm text-slate-600 mt-2">{bumdes.deskripsi}</p><p className="mt-3 text-sm text-slate-500"><MapPin className="mr-1 inline h-4 w-4 text-emerald-600" />{bumdes.alamat}</p><div className="mt-4 flex flex-wrap items-center gap-3"><a href={locationUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold"><MapPin className="h-4 w-4" />Lihat Lokasi GPS</a>{bumdes.kontak && <a href={`tel:${bumdes.kontak}`} className="inline-flex items-center gap-2 border border-emerald-200 text-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold"><Phone className="h-4 w-4" />{bumdes.kontak}</a>}</div></div></div></div>;
-              })}
+      <section className="space-y-5"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">Katalog Desa</p><h2 className="mt-1 text-2xl font-black text-slate-900 dark:text-white">{activeTab === 'bumdesa' ? 'Unit Usaha BUMDesa' : 'Produk UMKM Lokal'}</h2><p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Pilih kartu untuk melihat detail, lokasi, dan kontak pemesanan.</p></div><div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">{list.map((item) => <article key={item.id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"><button type="button" onClick={() => setSelectedItem(item)} className="block w-full text-left"><img src={item.image} alt={item.name} className="h-48 w-full object-cover" /><div className="space-y-3 p-4"><div><p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">{item.category}</p><h2 className="mt-1 font-bold text-slate-900 dark:text-white">{item.name}</h2></div><p className="line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{item.description}</p><p className="flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />{item.location}</p><span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300"><Package className="h-3.5 w-3.5" />Lihat katalog</span></div></button></article>)}</div></section>
 
-              <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-md">
-                <h4 className="font-bold text-lg text-emerald-800">UMKM Desa Kebonratu</h4>
-                <p className="text-sm text-slate-600 mt-1">Aneka produk lokal berkualitas dari pelaku UMKM Desa Kebonratu.</p>
-
-                <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {potensiList.filter(p => p.kategori === 'UMKM').map((u) => (
-                    <div key={u.id} onClick={() => setSelectedUmkm(u)} className="cursor-pointer rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                      <img src={(u as any).gambar || (u as any).foto || ''} alt={(u as any).nama || (u as any).namaProduk || ''} className="w-full h-40 object-cover" />
-                      <div className="p-4">
-                        <h5 className="font-bold text-emerald-800">{(u as any).nama || (u as any).namaProduk}</h5>
-                        <p className="text-xs text-slate-600 mt-1">{(u as any).deskripsi}</p>
-                        <div className="mt-3 flex items-center justify-between">
-                          <div className="text-xs text-slate-500 flex items-center gap-2"><MapPin className="w-4 h-4"/>{(u as any).lokasi}</div>
-                          <a onClick={(event) => event.stopPropagation()} href={`https://wa.me/${(u as any).kontakWA}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(((u as any).nama || (u as any).namaProduk) || '')}`} target="_blank" rel="noreferrer" className="bg-emerald-600 text-white px-3 py-2 rounded-md text-xs font-semibold">Pesan via WhatsApp</a>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* UMKM Tab */}
-          {activeTab === 'umkm' && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {potensiList.filter(p => p.kategori === 'UMKM').map((u) => (
-                  <div key={u.id} onClick={() => setSelectedUmkm(u)} className="cursor-pointer rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                    <img src={(u as any).gambar || (u as any).foto || ''} alt={(u as any).nama || (u as any).namaProduk || ''} className="w-full h-44 object-cover" />
-                    <div className="p-4">
-                      <h5 className="font-bold text-emerald-800">{(u as any).nama || (u as any).namaProduk}</h5>
-                      <p className="text-sm text-slate-600 mt-1">{(u as any).deskripsi}</p>
-                      <div className="mt-3 flex items-center justify-between">
-                        <div className="text-xs text-slate-500 flex items-center gap-2"><MapPin className="w-4 h-4"/>{(u as any).lokasi}</div>
-                        <a onClick={(event) => event.stopPropagation()} href={`https://wa.me/${(u as any).kontakWA}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(((u as any).nama || (u as any).namaProduk) || '')}`} target="_blank" rel="noreferrer" className="bg-emerald-600 text-white px-3 py-2 rounded-md text-xs font-semibold">Pesan via WhatsApp</a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-      </div>
-          </div>
-
-      {selectedUmkm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm" onClick={() => setSelectedUmkm(null)}>
-          <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-900" onClick={(event) => event.stopPropagation()}>
-            <div className="relative">{selectedUmkm.gambar && <img src={selectedUmkm.gambar} alt={selectedUmkm.nama} className="h-56 w-full object-cover" />}<button onClick={() => setSelectedUmkm(null)} aria-label="Tutup detail UMKM" className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-slate-700 shadow hover:bg-white"><X className="h-5 w-5" /></button></div>
-            <div className="space-y-3 p-6"><p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">Detail UMKM Desa</p><h2 className="text-2xl font-black text-slate-900 dark:text-white">{selectedUmkm.nama}</h2><p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{selectedUmkm.deskripsi}</p><div className="space-y-2 text-sm text-slate-600 dark:text-slate-300"><p><MapPin className="mr-2 inline h-4 w-4 text-emerald-600" />{selectedUmkm.lokasi}</p>{selectedUmkm.pemilik && <p>Pengelola: <strong>{selectedUmkm.pemilik}</strong></p>}{selectedUmkm.hargaRange && <p>Info usaha: <strong>{selectedUmkm.hargaRange}</strong></p>}</div>{selectedUmkm.kontakWA && <a href={`https://wa.me/${selectedUmkm.kontakWA}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedUmkm.nama)}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700">Pesan via WhatsApp</a>}</div>
-          </div>
-        </div>
-      )}
+      {selectedItem && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm" onClick={() => setSelectedItem(null)}><article className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-xl bg-white shadow-2xl dark:bg-slate-900" onClick={(event) => event.stopPropagation()}><header className="flex items-center justify-between bg-emerald-800 px-5 py-3 text-white"><span className="flex items-center gap-2 text-sm font-bold"><Package className="h-4 w-4" />Detail Katalog</span><button onClick={() => setSelectedItem(null)} aria-label="Tutup katalog" className="rounded-md p-1 hover:bg-white/15"><X className="h-5 w-5" /></button></header><div className="grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_220px]"><img src={selectedItem.image} alt={selectedItem.name} className="h-56 w-full rounded-lg object-cover md:h-full md:min-h-64" /><div className="space-y-4"><div><h2 className="text-xl font-black text-slate-900 dark:text-white">{selectedItem.name}</h2><span className="mt-2 inline-block rounded-md bg-emerald-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">{selectedItem.category}</span></div><p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{selectedItem.description}</p>{selectedItem.detail && <p className="flex gap-2 text-sm text-slate-700 dark:text-slate-200"><Package className="h-4 w-4 shrink-0 text-emerald-600" />{selectedItem.detail}</p>}<a href={whatsappUrl(selectedItem.contact, selectedItem.name)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border border-emerald-600 px-3 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300"><MessageCircle className="h-4 w-4" />Pesan via WhatsApp</a></div><aside className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs dark:border-slate-700 dark:bg-slate-800/60"><div><p className="mb-1 flex items-center gap-1.5 font-bold text-slate-900 dark:text-white"><Package className="h-4 w-4 text-emerald-600" />Produk</p><p className="text-slate-600 dark:text-slate-300">{selectedItem.name}</p></div><div><p className="mb-1 flex items-center gap-1.5 font-bold text-slate-900 dark:text-white"><MapPin className="h-4 w-4 text-emerald-600" />Lokasi</p><p className="text-slate-600 dark:text-slate-300">{selectedItem.location}</p></div>{selectedItem.manager && <div><p className="mb-1 flex items-center gap-1.5 font-bold text-slate-900 dark:text-white"><UserRound className="h-4 w-4 text-emerald-600" />Pengelola</p><p className="text-slate-600 dark:text-slate-300">{selectedItem.manager}</p></div>}{selectedItem.contact && <div><p className="mb-1 flex items-center gap-1.5 font-bold text-slate-900 dark:text-white"><Phone className="h-4 w-4 text-emerald-600" />Kontak</p><p className="text-slate-600 dark:text-slate-300">{selectedItem.contact}<br />(WhatsApp)</p></div>}</aside></div></article></div>}
     </div>
   );
 };
