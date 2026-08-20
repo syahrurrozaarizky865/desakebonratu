@@ -39,6 +39,10 @@ export const BerandaView: React.FC = () => {
     image: HERO_IMAGE,
     buttonText: 'Berita terbaru'
   };
+  // Old deployments stored a development-only `/src/...` asset path in the
+  // browser. Ignore it so returning visitors receive the bundled production
+  // image after deployment.
+  const heroImage = safeHero.image?.startsWith('/src/') ? HERO_IMAGE : (safeHero.image || HERO_IMAGE);
 
   const handleOpenBerita = (berita: Berita) => {
     setSelectedBerita(berita);
@@ -49,7 +53,7 @@ export const BerandaView: React.FC = () => {
     <div className="space-y-16 pb-16">
       {/* Informasi utama */}
       <section className="relative min-h-[560px] overflow-hidden bg-slate-950 text-white sm:min-h-[660px]">
-        <img src={safeHero.image || HERO_IMAGE} alt="Pemandangan Desa Kebonratu" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={heroImage} alt="Pemandangan Desa Kebonratu" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-slate-950/50" />
 
         <div className="relative z-10 mx-auto grid min-h-[560px] max-w-7xl grid-cols-1 items-end px-5 pb-12 sm:min-h-[660px] sm:px-8 sm:pb-16 lg:grid-cols-12">
