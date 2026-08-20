@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
+import { DEMO_STATS, PROFIL_DESA_DATA } from '../../data/initialData';
 import {
   Berita,
   Agenda,
@@ -142,10 +143,8 @@ export const AdminDashboard: React.FC = () => {
     setHeroForm(heroSettings);
   }, [heroSettings]);
 
-  const jumlahLakiLaki = pendudukList.filter((penduduk) => penduduk.jenisKelamin === 'Laki-laki').length;
-  const jumlahPerempuan = pendudukList.filter((penduduk) => penduduk.jenisKelamin === 'Perempuan').length;
-  const jumlahDusun = new Set(pendudukList.map((penduduk) => penduduk.dusun).filter(Boolean)).size;
-  const jumlahPenerimaBantuan = pendudukList.filter((penduduk) => penduduk.bantuanSosial.length > 0).length;
+  const jumlahLakiLaki = DEMO_STATS.gender.find((item) => item.name === 'Laki-laki')?.value ?? 0;
+  const jumlahPerempuan = DEMO_STATS.gender.find((item) => item.name === 'Perempuan')?.value ?? 0;
 
   const openEditor = (type: EditorType, item?: Record<string, unknown>) => {
     const defaults: Record<EditorType, Record<string, string>> = {
@@ -777,7 +776,7 @@ export const AdminDashboard: React.FC = () => {
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">Kependudukan Desa Kebonratu</h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Kelola data warga yang terdaftar di Desa Kebonratu.</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Ringkasan resmi RPJM Desa 2022-2029, dengan data warga operasional yang dapat dikelola di bawah.</p>
                 </div>
                 <button
                   onClick={() => openEditor('penduduk')}
@@ -789,10 +788,43 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-xl bg-emerald-50 p-3 dark:bg-emerald-950/30"><p className="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300">Warga terdata</p><p className="mt-1 text-xl font-black text-emerald-900 dark:text-emerald-100">{pendudukList.length}</p></div>
-                <div className="rounded-xl bg-sky-50 p-3 dark:bg-sky-950/30"><p className="text-[10px] font-bold uppercase text-sky-700 dark:text-sky-300">Laki-laki</p><p className="mt-1 text-xl font-black text-sky-900 dark:text-sky-100">{jumlahLakiLaki}</p></div>
-                <div className="rounded-xl bg-violet-50 p-3 dark:bg-violet-950/30"><p className="text-[10px] font-bold uppercase text-violet-700 dark:text-violet-300">Perempuan</p><p className="mt-1 text-xl font-black text-violet-900 dark:text-violet-100">{jumlahPerempuan}</p></div>
-                <div className="rounded-xl bg-amber-50 p-3 dark:bg-amber-950/30"><p className="text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300">Dusun / bantuan</p><p className="mt-1 text-xl font-black text-amber-900 dark:text-amber-100">{jumlahDusun} / {jumlahPenerimaBantuan}</p></div>
+                <div className="rounded-xl bg-emerald-50 p-3 dark:bg-emerald-950/30"><p className="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300">Total penduduk</p><p className="mt-1 text-xl font-black text-emerald-900 dark:text-emerald-100">{PROFIL_DESA_DATA.jumlahPenduduk.toLocaleString('id-ID')}</p></div>
+                <div className="rounded-xl bg-sky-50 p-3 dark:bg-sky-950/30"><p className="text-[10px] font-bold uppercase text-sky-700 dark:text-sky-300">Laki-laki</p><p className="mt-1 text-xl font-black text-sky-900 dark:text-sky-100">{jumlahLakiLaki.toLocaleString('id-ID')}</p></div>
+                <div className="rounded-xl bg-violet-50 p-3 dark:bg-violet-950/30"><p className="text-[10px] font-bold uppercase text-violet-700 dark:text-violet-300">Perempuan</p><p className="mt-1 text-xl font-black text-violet-900 dark:text-violet-100">{jumlahPerempuan.toLocaleString('id-ID')}</p></div>
+                <div className="rounded-xl bg-amber-50 p-3 dark:bg-amber-950/30"><p className="text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300">Kepala keluarga</p><p className="mt-1 text-xl font-black text-amber-900 dark:text-amber-100">{PROFIL_DESA_DATA.jumlahKK.toLocaleString('id-ID')}</p></div>
+              </div>
+
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">Statistik di atas mengacu pada RPJM Desa Kebonratu 2022-2029 halaman 13. Jumlah baris tabel berikut adalah data operasional, bukan total statistik desa.</p>
+
+              <div className="grid gap-3 lg:grid-cols-2">
+                <section className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">Tingkat Pendidikan</h4>
+                    <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">RPJM hlm. 14</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                    {DEMO_STATS.pendidikan.map((item) => (
+                      <div key={item.name} className="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-slate-800">
+                        <span className="text-slate-600 dark:text-slate-300">{item.name}</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{item.value.toLocaleString('id-ID')}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">Keagamaan</h4>
+                    <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">RPJM hlm. 15</span>
+                  </div>
+                  <div className="rounded-lg bg-emerald-50 px-3 py-3 text-xs dark:bg-emerald-950/30">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-medium text-emerald-800 dark:text-emerald-200">Islam</span>
+                      <span className="text-base font-black text-emerald-900 dark:text-emerald-100">{PROFIL_DESA_DATA.jumlahPenduduk.toLocaleString('id-ID')} jiwa</span>
+                    </div>
+                    <p className="mt-2 text-[11px] text-emerald-700 dark:text-emerald-300">Katolik, Kristen, Hindu, dan Budha: tidak tercatat dalam dokumen RPJM.</p>
+                  </div>
+                </section>
               </div>
 
               <div className="overflow-x-auto">
