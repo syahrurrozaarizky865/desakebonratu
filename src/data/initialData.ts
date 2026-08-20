@@ -9,8 +9,10 @@ import {
   PendudukItem,
   APBDesItem
 } from '../types';
+import heroImage from '../assets/images/kebonratu_hero_1785575421949.jpg';
 
-export const HERO_IMAGE = '/src/assets/images/kebonratu_hero_1785575421949.jpg';
+// Import the hero asset so Vite copies it into the production build.
+export const HERO_IMAGE = heroImage;
 export const KANTOR_IMAGE = '/src/assets/images/kebonratu_office_1785575436763.jpg';
 export const KADES_IMAGE = '/src/assets/images/kebonratu_kades_1785575447875.jpg';
 
