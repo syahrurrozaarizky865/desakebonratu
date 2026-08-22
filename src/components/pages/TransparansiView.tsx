@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { PROGRAM_RPJM_TERLAKSANA } from '../../data/initialData';
 import {
   Wallet,
   TrendingUp,
@@ -75,6 +76,36 @@ export const TransparansiView: React.FC = () => {
           Laporan Anggaran Pendapatan dan Belanja Desa (APBDes) serta realisasi penggunaan Dana Desa (APBN) dan ADD Kabupaten Serang Tahun {selectedYear}.
         </p>
       </div>
+
+      <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Dokumen Perencanaan Desa</p>
+            <h2 className="mt-1 text-lg font-bold text-slate-900 dark:text-white">Program prioritas RPJM Desa 2022-2029</h2>
+            <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+              Program berikut dicantumkan dari matriks Dokumen Perubahan RPJM Desa Kebonratu pada halaman 97-140 dengan status target pelaksanaan tercatat di dokumen.
+            </p>
+          </div>
+          <div className="rounded-xl bg-amber-50 px-3 py-2 text-[11px] font-medium leading-relaxed text-amber-800 dark:bg-amber-950/50 dark:text-amber-200 sm:max-w-xs">
+            Nilai adalah prakiraan biaya program RPJM, bukan realisasi kas atau LPJ APBDes.
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {PROGRAM_RPJM_TERLAKSANA.map((item) => (
+            <article key={item.program} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-xs font-bold text-slate-900 dark:text-white">{item.program}</p>
+                <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">{item.bidang}</span>
+              </div>
+              <p className="mt-3 text-base font-black text-emerald-600 dark:text-emerald-400">{formatRupiah(item.biaya)}</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">{item.status}</p>
+            </article>
+          ))}
+        </div>
+
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">Sumber: Dokumen Perubahan RPJM Desa Kebonratu Tahun 2022-2029, matriks halaman 97-140.</p>
+      </section>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

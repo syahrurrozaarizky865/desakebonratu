@@ -252,7 +252,7 @@ export const BerandaView: React.FC = () => {
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Kontak</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">WhatsApp</p>
                 <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-100">{PROFIL_DESA_DATA.telepon}</p>
                 <p className="text-xs text-slate-600 dark:text-slate-300">{PROFIL_DESA_DATA.email}</p>
               </div>

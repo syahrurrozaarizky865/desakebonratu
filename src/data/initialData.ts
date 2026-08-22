@@ -27,8 +27,8 @@ export const PROFIL_DESA_DATA = {
   kodePos: '42182',
   alamat: 'W723+MGM, Kp. Warakas, RT.003/RW.002, Kebonratu',
   email: 'dkebonratu@gmail.com',
-  telepon: '(0254) 892-104',
-  whatsapp: '081289001234',
+  telepon: '087741196061',
+  whatsapp: '087741196061',
   luasWilayah: 2.8, // km²
   jumlahPenduduk: 4532,
   jumlahKK: 1373,
@@ -515,6 +515,23 @@ export const INITIAL_APBDES: APBDesItem[] = [
   { id: 'apb8', tahun: 2026, kategori: 'Belanja', subKategori: 'Pembinaan Kemasyarakatan', anggaran: 180000000, realisasi: 95000000 },
   { id: 'apb9', tahun: 2026, kategori: 'Belanja', subKategori: 'Pemberdayaan Masyarakat (UMKM/Tani)', anggaran: 220000000, realisasi: 110000000 },
   { id: 'apb10', tahun: 2026, kategori: 'Belanja', subKategori: 'Penanggulangan Bencana & Darurat', anggaran: 60000000, realisasi: 15000000 }
+];
+
+// Ringkasan matriks program pada Dokumen Perubahan RPJM Desa Kebonratu 2022-2029.
+// Nilai berikut adalah prakiraan biaya program dalam dokumen, bukan laporan kas atau LPJ APBDes.
+export const PROGRAM_RPJM_TERLAKSANA = [
+  { program: 'Penyelenggaraan Posyandu', bidang: 'Kesehatan', biaya: 720000000, status: 'Terlaksananya penyelenggaraan Posyandu' },
+  { program: 'Penyuluhan dan pelatihan bidang kesehatan', bidang: 'Kesehatan', biaya: 40000000, status: 'Terlaksananya penyuluhan dan pelatihan kesehatan' },
+  { program: 'Pemeliharaan jalan desa', bidang: 'Pekerjaan umum', biaya: 50000000, status: 'Terlaksananya pemeliharaan jalan desa' },
+  { program: 'Pemeliharaan jalan lingkungan / gang', bidang: 'Pekerjaan umum', biaya: 800000000, status: 'Terlaksananya pemeliharaan jalan lingkungan' },
+  { program: 'Pembangunan / rehabilitasi jalan desa', bidang: 'Pekerjaan umum', biaya: 1500000000, status: 'Terlaksananya pembangunan dan rehabilitasi jalan desa' },
+  { program: 'Peningkatan / pengerasan jalan lingkungan', bidang: 'Pekerjaan umum', biaya: 1000000000, status: 'Terlaksananya peningkatan jalan lingkungan' },
+  { program: 'Rehabilitasi prasarana jalan dan drainase', bidang: 'Pekerjaan umum', biaya: 1000000000, status: 'Terlaksananya rehabilitasi prasarana jalan desa' },
+  { program: 'Pemeliharaan sanitasi lingkungan', bidang: 'Pekerjaan umum', biaya: 160000000, status: 'Terlaksananya pemeliharaan sanitasi' },
+  { program: 'Pembangunan / peningkatan saluran irigasi', bidang: 'Pertanian', biaya: 500000000, status: 'Terlaksananya pembangunan saluran irigasi' },
+  { program: 'Penyelenggaraan festival kesenian dan keagamaan', bidang: 'Kemasyarakatan', biaya: 80000000, status: 'Terlaksananya festival kesenian dan keagamaan' },
+  { program: 'Pembentukan BUM Desa', bidang: 'Pemberdayaan ekonomi', biaya: 200000000, status: 'Terlaksananya pembentukan BUM Desa' },
+  { program: 'Pengadaan teknologi tepat guna untuk pengembangan pertanian', bidang: 'Pemberdayaan ekonomi', biaya: 25000000, status: 'Terlaksananya pengadaan teknologi tepat guna' }
 ];
 
 export const DEMO_STATS = {

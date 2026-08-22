@@ -4,7 +4,6 @@ import { supabase } from '../../lib/supabase';
 import { KANTOR_DESA_MAP_EMBED_URL, KANTOR_DESA_MAP_URL, PROFIL_DESA_DATA } from '../../data/initialData';
 import {
   MapPin,
-  Phone,
   Mail,
   Clock,
   Send,
@@ -87,10 +86,10 @@ export const KontakView: React.FC = () => {
 
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-950 text-teal-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <Phone className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 dark:text-white">Telepon Sekretariat</h4>
+                  <h4 className="font-bold text-slate-900 dark:text-white">WhatsApp Layanan Desa</h4>
                   <p className="text-slate-600 dark:text-slate-300 mt-0.5">{PROFIL_DESA_DATA.telepon}</p>
                 </div>
               </div>

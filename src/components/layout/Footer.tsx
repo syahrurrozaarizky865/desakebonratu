@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { PageId } from '../../types';
 import {
   MapPin,
-  Phone,
+  MessageCircle,
   Mail,
   Clock,
   ExternalLink,
@@ -92,7 +92,7 @@ export const Footer: React.FC = () => {
                 <span>{PROFIL_DESA_DATA.alamat}, Kode Pos {PROFIL_DESA_DATA.kodePos}</span>
               </li>
               <li className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-emerald-500 shrink-0" />
+                <MessageCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span>{PROFIL_DESA_DATA.telepon}</span>
               </li>
               <li className="flex items-center gap-2.5">
