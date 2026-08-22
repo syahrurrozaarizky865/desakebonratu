@@ -3,6 +3,8 @@ import { useApp } from '../../context/AppContext';
 import {
   HERO_IMAGE,
   KANTOR_IMAGE,
+  KANTOR_DESA_MAP_EMBED_URL,
+  KANTOR_DESA_MAP_URL,
   PROFIL_DESA_DATA
 } from '../../data/initialData';
 import {
@@ -203,10 +205,10 @@ export const BerandaView: React.FC = () => {
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">Lokasi</p>
-              <h2 className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">Peta Desa Kebonratu</h2>
+              <h2 className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">Peta Kantor Desa Kebonratu</h2>
             </div>
             <a
-              href="https://maps.app.goo.gl/p7CwXCZCh7H5jsth8"
+              href={KANTOR_DESA_MAP_URL}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300"
@@ -219,8 +221,8 @@ export const BerandaView: React.FC = () => {
           <div className="grid grid-cols-1 gap-6">
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 dark:border-slate-700">
               <iframe
-                title="Peta Desa Kebonratu"
-                src="https://www.google.com/maps?q=-6.0946006,106.2610404&z=15&output=embed"
+                title="Peta Kantor Desa Kebonratu"
+                src={KANTOR_DESA_MAP_EMBED_URL}
                 className="h-[420px] w-full border-0 sm:h-[520px]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -246,7 +248,7 @@ export const BerandaView: React.FC = () => {
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Jam Layanan</p>
                 <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Senin - Jumat</p>
-                <p className="text-xs text-slate-600 dark:text-slate-300">08.00 - 15.00 WIB</p>
+                <p className="text-xs text-slate-600 dark:text-slate-300">07.30 - 16.00 WIB</p>
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">

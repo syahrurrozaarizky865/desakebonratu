@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { PROFIL_DESA_DATA, KANTOR_IMAGE, KADES_IMAGE } from '../../data/initialData';
+import { KANTOR_DESA_MAP_EMBED_URL, PROFIL_DESA_DATA, KANTOR_IMAGE, KADES_IMAGE } from '../../data/initialData';
 import {
   History,
   Compass,
@@ -10,8 +10,7 @@ import {
   Phone,
   GraduationCap,
   Building,
-  CheckCircle2,
-  MapPin
+  CheckCircle2
 } from 'lucide-react';
 
 export const ProfilView: React.FC = () => {
@@ -92,6 +91,7 @@ export const ProfilView: React.FC = () => {
             {PROFIL_DESA_DATA.sejarah.split('\n\n').map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
+            <p>{PROFIL_DESA_DATA.sejarahLengkap}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
@@ -110,6 +110,21 @@ export const ProfilView: React.FC = () => {
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                 Hingga kini, tradisi gotong royong warga dalam membangun sarana ibadah, jalan kampung, dan pengairan persawahan tetap dipertahankan secara utuh.
               </p>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
+            <div className="bg-slate-50 px-4 py-3 dark:bg-slate-800">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Riwayat Kepala Desa</h3>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Sesuai Tabel 2.1.1 Dokumen Perubahan RPJM Desa 2022-2029.</p>
+            </div>
+            <div className="grid grid-cols-1 divide-y divide-slate-100 dark:divide-slate-700 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+              {PROFIL_DESA_DATA.riwayatKepalaDesa.map(([periode, nama]) => (
+                <div key={periode} className="flex items-center justify-between gap-3 px-4 py-2.5 text-xs">
+                  <span className="font-semibold text-slate-500 dark:text-slate-400">{periode}</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-100">{nama}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -146,6 +161,18 @@ export const ProfilView: React.FC = () => {
                   <p className="text-slate-700 dark:text-slate-200 font-medium pt-0.5 leading-relaxed">
                     {misiText}
                   </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg space-y-4">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Penjabaran Visi</h3>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {PROFIL_DESA_DATA.penjabaranVisi.map((item) => (
+                <div key={item.istilah} className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900 dark:bg-emerald-950/30">
+                  <h4 className="font-bold text-emerald-800 dark:text-emerald-300">{item.istilah}</h4>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{item.isi}</p>
                 </div>
               ))}
             </div>
@@ -215,19 +242,15 @@ export const ProfilView: React.FC = () => {
               </div>
 
               <div className="pt-2">
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white mb-2">
-                  Daftar Wilayah Dusun & Kampung:
-                </h4>
-                <div className="space-y-2">
-                  {PROFIL_DESA_DATA.dusunList.map((dusun, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700"
-                    >
-                      <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{dusun}</span>
-                    </div>
-                  ))}
+                <div className="mb-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs dark:border-slate-700 dark:bg-slate-800">
+                    <span className="block text-slate-500 dark:text-slate-400">Ke ibu kota kecamatan</span>
+                    <strong className="text-slate-900 dark:text-white">{PROFIL_DESA_DATA.jarakKeKecamatanKm} km / {PROFIL_DESA_DATA.waktuKeKecamatanMenit} menit</strong>
+                  </div>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs dark:border-slate-700 dark:bg-slate-800">
+                    <span className="block text-slate-500 dark:text-slate-400">Ke ibu kota kabupaten</span>
+                    <strong className="text-slate-900 dark:text-white">{PROFIL_DESA_DATA.jarakKeKabupatenKm} km / {PROFIL_DESA_DATA.waktuKeKabupatenMenit} menit</strong>
+                  </div>
                 </div>
               </div>
             </div>
@@ -239,8 +262,8 @@ export const ProfilView: React.FC = () => {
                 <span className="text-emerald-400 text-[11px]">Serang, Banten</span>
               </div>
               <iframe
-                title="Google Maps Kebonratu"
-                src="https://www.google.com/maps?q=-6.0946006,106.2610404&z=15&output=embed"
+                title="Google Maps Kantor Desa Kebonratu"
+                src={KANTOR_DESA_MAP_EMBED_URL}
                 className="w-full h-full min-h-[250px] border-0"
                 loading="lazy"
               />

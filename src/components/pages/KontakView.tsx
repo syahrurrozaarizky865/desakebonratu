@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
-import { PROFIL_DESA_DATA } from '../../data/initialData';
+import { KANTOR_DESA_MAP_EMBED_URL, KANTOR_DESA_MAP_URL, PROFIL_DESA_DATA } from '../../data/initialData';
 import {
   MapPin,
   Phone,
@@ -112,7 +112,7 @@ export const KontakView: React.FC = () => {
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white">Jam Operasional Pelayanan</h4>
                   <p className="text-slate-600 dark:text-slate-300 mt-0.5">
-                    Senin - Jumat : 08.00 - 15.00 WIB
+                    Senin - Jumat : 07.30 - 16.00 WIB
                   </p>
                   <p className="text-[11px] text-slate-400">Sabtu, Minggu & Hari Libur Nasional : Tutup</p>
                 </div>
@@ -136,12 +136,12 @@ export const KontakView: React.FC = () => {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-md space-y-3">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <MapPin className="w-4 h-4 text-emerald-600" />
-              Peta Lokasi Balai Desa Kebonratu
+              Peta Lokasi Kantor Desa Kebonratu
             </h3>
             <div className="relative h-56 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
               <iframe
-                title="Google Maps Desa Kebonratu"
-                src="https://www.google.com/maps?q=-6.0946006,106.2610404&z=15&output=embed"
+                title="Google Maps Kantor Desa Kebonratu"
+                src={KANTOR_DESA_MAP_EMBED_URL}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -152,7 +152,7 @@ export const KontakView: React.FC = () => {
               />
             </div>
             <a
-              href="https://maps.app.goo.gl/p7CwXCZCh7H5jsth8"
+              href={KANTOR_DESA_MAP_URL}
               target="_blank"
               rel="noreferrer"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300"

@@ -15,15 +15,18 @@ import heroImage from '../assets/images/kebonratu_hero_1785575421949.jpg';
 export const HERO_IMAGE = heroImage;
 export const KANTOR_IMAGE = '/src/assets/images/kebonratu_office_1785575436763.jpg';
 export const KADES_IMAGE = '/src/assets/images/kebonratu_kades_1785575447875.jpg';
+export const KANTOR_DESA_MAP_URL = 'https://www.google.com/maps/place/Kantor+Desa+Kebonratu/@-6.098286,106.2512215,17z/data=!3m1!4b1!4m6!3m5!1s0x2e41f7005d9bf2fb:0x8b48a97476945ce!8m2!3d-6.098286!4d106.2537964!16s%2Fg%2F11wvk84sz9';
+// Google Maps blocks regular place URLs inside iframes, so search the official place name via its supported embed endpoint.
+export const KANTOR_DESA_MAP_EMBED_URL = 'https://www.google.com/maps?q=Kantor+Desa+Kebonratu%2C+W723%2BMGM%2C+Kebonratu%2C+Kec.+Lebak+Wangi%2C+Kabupaten+Serang%2C+Banten&z=17&output=embed';
 
 export const PROFIL_DESA_DATA = {
   nama: 'Desa Kebonratu',
-  kecamatan: 'Kecamatan Lebak Wangi',
+  kecamatan: 'Kec. Lebak Wangi',
   kabupaten: 'Kabupaten Serang',
-  provinsi: 'Provinsi Banten',
-  kodePos: '42194',
-  alamat: 'Jl. Raya Lebakwangi - Tanara No. 12, Kebonratu',
-  email: 'pemdes@kebonratu.desa.id',
+  provinsi: 'Banten',
+  kodePos: '42182',
+  alamat: 'W723+MGM, Kp. Warakas, RT.003/RW.002, Kebonratu',
+  email: 'dkebonratu@gmail.com',
   telepon: '(0254) 892-104',
   whatsapp: '081289001234',
   luasWilayah: 2.8, // km²
@@ -32,14 +35,34 @@ export const PROFIL_DESA_DATA = {
   jumlahDusun: 6,
   jumlahRT: 11,
   jumlahRW: 5,
+  sumberData: 'Dokumen Perubahan RPJM Desa Kebonratu Tahun 2022-2029',
+  tahunData: 2025,
+  jarakKeKecamatanKm: 3,
+  waktuKeKecamatanMenit: 15,
+  jarakKeKabupatenKm: 12,
+  waktuKeKabupatenMenit: 45,
+  luasPadiSawahHa: 280,
   petaCoordinates: {
-    lat: -6.0485,
-    lng: 106.2150
+    lat: -6.098286,
+    lng: 106.2537964
   },
   sejarah: `Desa Kebonratu berada di Kecamatan Lebak Wangi, Kabupaten Serang. Kecamatan Lebak Wangi merupakan kecamatan pemekaran dari Kecamatan Ciruas, Kragilan, Carenang, dan Pontang berdasarkan Peraturan Daerah Kabupaten Serang Nomor 7 Tahun 2012.
 
 Sesuai namanya, Desa Kebonratu dahulu merupakan area perkebunan yang dimiliki seorang ratu dari Kerajaan Banten. Pemerintahan Desa Kebonratu berdiri sekitar tahun 1932 dan mula-mula dipimpin oleh Lurah H. Asmad (1932-1942), kemudian dilanjutkan oleh Lurah H. Juarsa (1942-1952).`,
+  sejarahLengkap: 'Pada awal Pemerintahan Republik Indonesia, sistem pemerintahan lurah/kelurahan diganti menjadi kepala desa. Namun, sistem pemerintahan desa belum dapat dilaksanakan secara maksimal sehingga masa bakti jabatan kepala desa belum jelas dan belum ada pemilihan kepala desa secara demokratis sampai tahun 1980.',
+  riwayatKepalaDesa: [
+    ['1932-1942', 'H. Asmad'], ['1942-1952', 'H. Juarsa'], ['1952-1960', 'Nawawi'], ['1960-1961', 'H. Idris (PJS)'],
+    ['1961-1971', 'Tawi'], ['1971-1975', 'H. Abu Bakar'], ['1975-1980', 'H. Amsur (PJS)'], ['1980-1988', 'H. Kasnari'],
+    ['1988-1990', 'H. Abdulmalik'], ['1990-1998', 'Sawiri'], ['1998-2000', 'Abdullah (PJS)'], ['2000-2008', 'H. Madumar'],
+    ['2008-2014', 'H. Madumar'], ['2014-2015', 'Hamami El (PJS)'], ['2015-2021', "Sam'un"], ['2021-2029', 'A. Guruh Tajul Arasy']
+  ],
   visi: 'Terwujudnya Desa Kebonratu yang Maju, Sejahtera, Adil, dan Agamis.',
+  penjabaranVisi: [
+    { istilah: 'Maju', isi: 'Pembangunan di segala sektor untuk meningkatkan pelayanan dasar dan perekonomian masyarakat, didukung pembenahan infrastruktur di seluruh wilayah Desa Kebonratu.' },
+    { istilah: 'Sejahtera', isi: 'Terpenuhinya kebutuhan lahiriah dan batiniah masyarakat, meliputi pangan, sandang, papan, kesehatan, pendidikan, agama, dan budaya.' },
+    { istilah: 'Adil', isi: 'Pembangunan dilakukan secara merata dengan memperhatikan aspek kewilayahan dan sosial ekonomi masyarakat untuk mewujudkan pembangunan berkelanjutan.' },
+    { istilah: 'Agamis', isi: 'Implementasi norma agama dan nilai budaya sebagai landasan moral dan spiritual dalam kehidupan bermasyarakat.' }
+  ],
   misi: [
     'Mewujudkan pembangunan desa di segala sektor untuk meningkatkan pelayanan dasar dan perekonomian masyarakat, didukung pembenahan infrastruktur di seluruh wilayah Desa Kebonratu.',
     'Memenuhi kebutuhan lahiriah dan batiniah masyarakat melalui peningkatan kesejahteraan, kesehatan, pendidikan, agama, dan budaya.',
@@ -499,12 +522,6 @@ export const DEMO_STATS = {
     { name: 'Laki-laki', value: 2148, color: '#16a34a' },
     { name: 'Perempuan', value: 2384, color: '#0284c7' }
   ],
-  usia: [
-    { name: '0 - 12 Thn (Anak)', value: 920 },
-    { name: '13 - 18 Thn (Remaja)', value: 680 },
-    { name: '19 - 59 Thn (Dewasa)', value: 2680 },
-    { name: '60+ Thn (Lansia)', value: 545 }
-  ],
   pendidikan: [
     { name: 'SD / MI', value: 754 },
     { name: 'SLTP / MTs', value: 795 },
@@ -522,10 +539,13 @@ export const DEMO_STATS = {
   agama: [
     { name: 'Islam', value: 4532 }
   ],
-  bansos: [
-    { name: 'PKH', value: 320 },
-    { name: 'BPNT', value: 410 },
-    { name: 'BLT Dana Desa', value: 110 },
-    { name: 'KIP / Beasiswa', value: 240 }
+  saranaPendidikan: [
+    { name: 'TK / PAUD', value: 4 },
+    { name: 'SD / MI', value: 1 },
+    { name: 'SLTA / MA', value: 1 }
+  ],
+  tempatIbadah: [
+    { name: 'Masjid', value: 4 },
+    { name: 'Mushola', value: 10 }
   ]
 };

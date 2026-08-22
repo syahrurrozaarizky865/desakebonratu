@@ -77,9 +77,9 @@ interface AppContextType {
   updatePotensi: (p: PotensiItem) => void;
   deletePotensi: (id: string) => void;
 
-  addBumdes: (item: Omit<BumdesItem, 'id'>) => void;
-  updateBumdes: (item: BumdesItem) => void;
-  deleteBumdes: (id: string) => void;
+  addBumdes: (item: Omit<BumdesItem, 'id'>) => Promise<boolean>;
+  updateBumdes: (item: BumdesItem) => Promise<boolean>;
+  deleteBumdes: (id: string) => Promise<boolean>;
 
   addPenduduk: (p: Omit<PendudukItem, 'id'>) => void;
   updatePenduduk: (p: PendudukItem) => void;
@@ -388,23 +388,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast('info', 'Potensi desa dihapus');
   };
 
-  const addBumdes = (item: Omit<BumdesItem, 'id'>) => {
+  const addBumdes = async (item: Omit<BumdesItem, 'id'>) => {
     const newItem: BumdesItem = { ...item, id: 'bumdes-' + Date.now() };
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Data BUMDes tidak dapat disimpan.');
+      return false;
+    }
+    const { error } = await supabase.from('bumdes').insert(newItem);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setBumdesList((current) => [newItem, ...current]);
-    if (supabase) void supabase.from('bumdes').insert(newItem).then(({ error }) => reportDatabaseError(error));
     addToast('success', 'Data BUMDes berhasil ditambahkan');
+    return true;
   };
 
-  const updateBumdes = (item: BumdesItem) => {
+  const updateBumdes = async (item: BumdesItem) => {
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Perubahan BUMDes tidak dapat disimpan.');
+      return false;
+    }
+    const { error } = await supabase.from('bumdes').update(item).eq('id', item.id);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setBumdesList((current) => current.map((entry) => entry.id === item.id ? item : entry));
-    if (supabase) void supabase.from('bumdes').update(item).eq('id', item.id).then(({ error }) => reportDatabaseError(error));
     addToast('success', 'Data BUMDes berhasil diperbarui');
+    return true;
   };
 
-  const deleteBumdes = (id: string) => {
+  const deleteBumdes = async (id: string) => {
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Data BUMDes tidak dapat dihapus.');
+      return false;
+    }
+    const { error } = await supabase.from('bumdes').delete().eq('id', id);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setBumdesList((current) => current.filter((entry) => entry.id !== id));
-    if (supabase) void supabase.from('bumdes').delete().eq('id', id).then(({ error }) => reportDatabaseError(error));
     addToast('info', 'Data BUMDes berhasil dihapus');
+    return true;
   };
 
   const addPenduduk = (item: Omit<PendudukItem, 'id'>) => {

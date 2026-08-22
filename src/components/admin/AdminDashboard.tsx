@@ -252,7 +252,8 @@ export const AdminDashboard: React.FC = () => {
       if (type === 'bumdes') {
       const coordinates = data.latitude && data.longitude ? { latitude: data.latitude, longitude: data.longitude } : {};
       const item = { nama: data.nama, jenis_usaha: data.jenis_usaha, deskripsi: data.deskripsi, alamat: data.alamat, kontak: data.kontak, pemilik: data.pemilik, gambar: savedData.gambar, ...coordinates };
-      id ? updateBumdes({ ...item, id }) : addBumdes(item);
+      const isSaved = id ? await updateBumdes({ ...item, id }) : await addBumdes(item);
+      if (!isSaved) return;
     }
       if (type === 'apbdes') {
       const item = { tahun: Number(data.tahun), kategori: data.kategori as APBDesItem['kategori'], subKategori: data.subKategori, anggaran: Number(data.anggaran), realisasi: Number(data.realisasi) };

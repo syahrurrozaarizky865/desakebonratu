@@ -7,7 +7,7 @@ import {
   Briefcase,
   GraduationCap,
   Heart,
-  TrendingUp
+  Building
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -23,7 +23,7 @@ import {
 } from 'recharts';
 
 export const DataDesaView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'gender' | 'usia' | 'pendidikan' | 'pekerjaan' | 'bansos'>('gender');
+  const [activeTab, setActiveTab] = useState<'gender' | 'pendidikan' | 'pekerjaan' | 'sarana' | 'ibadah'>('gender');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
@@ -34,7 +34,7 @@ export const DataDesaView: React.FC = () => {
         </span>
         <h1 className="text-3xl font-black">Data Kependudukan Desa Kebonratu</h1>
         <p className="text-xs sm:text-sm text-emerald-100 max-w-2xl leading-relaxed">
-          Statistik resmi demografi kependudukan, mata pencaharian, tingkat pendidikan, dan penyaluran bantuan sosial bagi masyarakat Desa Kebonratu.
+          Ringkasan statistik kependudukan, pendidikan, mata pencaharian, dan sarana sosial Desa Kebonratu.
         </p>
 
         {/* Total Badge */}
@@ -48,14 +48,18 @@ export const DataDesaView: React.FC = () => {
         </div>
       </div>
 
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs leading-relaxed text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100">
+        <span className="font-bold">Sumber data:</span> {PROFIL_DESA_DATA.sumberData}, Bab II halaman 13-16 (dokumen tahun {PROFIL_DESA_DATA.tahunData}). Data individu penduduk tidak ditampilkan kepada publik untuk melindungi privasi.
+      </div>
+
       {/* Navigation Switcher */}
       <div className="flex overflow-x-auto gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
         {[
           { id: 'gender', label: 'Jenis Kelamin', icon: Users },
-          { id: 'usia', label: 'Kelompok Usia', icon: TrendingUp },
           { id: 'pendidikan', label: 'Tingkat Pendidikan', icon: GraduationCap },
           { id: 'pekerjaan', label: 'Mata Pencaharian', icon: Briefcase },
-          { id: 'bansos', label: 'Bantuan Sosial', icon: Heart }
+          { id: 'sarana', label: 'Sarana Pendidikan', icon: Building },
+          { id: 'ibadah', label: 'Tempat Ibadah', icon: Heart }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -139,32 +143,7 @@ export const DataDesaView: React.FC = () => {
           </div>
         )}
 
-        {/* 2. KELOMPOK USIA */}
-        {activeTab === 'usia' && (
-          <div className="space-y-6">
-            <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                Statistik Kelompok Usia Penduduk
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Sebaran demografi berdasarkan rentang umur anak, remaja, produktif, dan lansia
-              </p>
-            </div>
-
-            <div className="h-80 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={DEMO_STATS.usia} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} />
-                  <YAxis stroke="#888888" fontSize={12} />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#16a34a" radius={[10, 10, 0, 0]} name="Jumlah Jiwa" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        )}
-
-        {/* 3. TINGKAT PENDIDIKAN */}
+        {/* 2. TINGKAT PENDIDIKAN */}
         {activeTab === 'pendidikan' && (
           <div className="space-y-6">
             <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -189,7 +168,7 @@ export const DataDesaView: React.FC = () => {
           </div>
         )}
 
-        {/* 4. MATA PENCAHARIAN */}
+        {/* 3. MATA PENCAHARIAN */}
         {activeTab === 'pekerjaan' && (
           <div className="space-y-6">
             <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -214,25 +193,45 @@ export const DataDesaView: React.FC = () => {
           </div>
         )}
 
-        {/* 5. BANTUAN SOSIAL */}
-        {activeTab === 'bansos' && (
+        {/* 4. SARANA PENDIDIKAN */}
+        {activeTab === 'sarana' && (
           <div className="space-y-6">
             <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                Statistik Penerima Bantuan Sosial
+                Sarana Pendidikan Desa
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Jumlah Keluarga Penerima Manfaat (KPM) program PKH, BPNT, dan BLT Dana Desa
+                Jumlah satuan pendidikan yang tercatat dalam Dokumen Perubahan RPJM Desa
               </p>
             </div>
 
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={DEMO_STATS.bansos} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                <BarChart data={DEMO_STATS.saranaPendidikan} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                   <XAxis dataKey="name" stroke="#888888" fontSize={12} />
                   <YAxis stroke="#888888" fontSize={12} />
                   <Tooltip />
-                  <Bar dataKey="value" fill="#eab308" radius={[10, 10, 0, 0]} name="Jumlah KPM" />
+                  <Bar dataKey="value" fill="#eab308" radius={[10, 10, 0, 0]} name="Jumlah Unit" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
+        {/* 5. TEMPAT IBADAH */}
+        {activeTab === 'ibadah' && (
+          <div className="space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Tempat Ibadah</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Sarana ibadah yang tercatat dalam Dokumen Perubahan RPJM Desa</p>
+            </div>
+            <div className="h-80 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={DEMO_STATS.tempatIbadah} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <XAxis dataKey="name" stroke="#888888" fontSize={12} />
+                  <YAxis stroke="#888888" fontSize={12} />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#0d9488" radius={[10, 10, 0, 0]} name="Jumlah Unit" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -81,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenLogin }) => {
             </span>
             <span className="hidden md:inline text-emerald-300">|</span>
             <span className="hidden md:flex items-center gap-1 text-emerald-200">
-              <PhoneCall className="w-3 h-3" /> Jam Pelayanan: Senin - Jumat (08.00 - 15.00 WIB)
+              <PhoneCall className="w-3 h-3" /> Jam Pelayanan: Senin - Jumat (07.30 - 16.00 WIB)
             </span>
           </div>
 
