@@ -14,7 +14,7 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { PROFIL_DESA_DATA } from '../../data/initialData';
-import logoDesa from '../../assets/images/logo.png';
+import logoDesa from '../../assets/images/pemda-serang.png';
 import logoKebonratuGo from '../../assets/images/kebonratu-go-logo.jpeg';
 
 interface NavbarProps {

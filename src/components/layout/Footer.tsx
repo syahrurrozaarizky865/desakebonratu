@@ -12,8 +12,9 @@ import {
   Users
 } from 'lucide-react';
 import { PROFIL_DESA_DATA } from '../../data/initialData';
-import logoDesa from '../../assets/images/logo.png';
+import logoDesa from '../../assets/images/pemda-serang.png';
 import logoUniba from '../../assets/images/uniba-logo.webp';
+import logoKebonratuProduktif from '../../assets/images/kebonratu-produktif.jpeg';
 
 export const Footer: React.FC = () => {
   const { setActivePage } = useApp();
@@ -33,11 +34,11 @@ export const Footer: React.FC = () => {
           {/* Col 1: Profil Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="h-24 w-24 shrink-0">
+              <div className="h-20 w-20 shrink-0">
                 <img
                   src={logoDesa}
                   alt="Logo Pemerintah Desa Kebonratu"
-                  className="h-full w-full scale-150 object-contain"
+                  className="h-full w-full object-contain"
                 />
               </div>
               <div>
@@ -150,6 +151,13 @@ export const Footer: React.FC = () => {
                 src={logoUniba}
                 alt="Logo Universitas Bina Bangsa"
                 className="h-full w-full scale-[1.04] object-cover"
+              />
+            </div>
+            <div className="h-8 w-24 shrink-0 overflow-hidden rounded-sm bg-white">
+              <img
+                src={logoKebonratuProduktif}
+                alt="Logo Kebonratu Produktif"
+                className="h-full w-full object-contain"
               />
             </div>
             <p>KEBONRATU GO dikembangkan melalui kolaborasi Pemerintah Desa Kebonratu, KKM Kelompok 27, dan PkM Tematik Dosen Universitas Bina Bangsa Tahun 2026.</p>
