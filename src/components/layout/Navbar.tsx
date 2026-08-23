@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { PROFIL_DESA_DATA } from '../../data/initialData';
 import logoDesa from '../../assets/images/logo.png';
+import logoKebonratuGo from '../../assets/images/kebonratu-go-logo.jpeg';
 
 interface NavbarProps {
   onOpenLogin: () => void;
@@ -106,10 +107,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenLogin }) => {
           onClick={() => handleNavClick('beranda')}
           className="flex shrink-0 items-center gap-3 text-left focus:outline-none group"
         >
-          <div className="h-12 w-12 overflow-hidden transition-transform group-hover:scale-105 sm:h-16 sm:w-16">
+          <div className="hidden h-[76px] w-[292px] overflow-hidden sm:block">
+            <img src={logoKebonratuGo} alt="KEBONRATU GO — Platform Digital Desa Kebonratu" className="relative left-[-84px] top-[-108px] w-[461px] max-w-none transition-transform group-hover:scale-[1.02]" />
+          </div>
+          <div className="h-12 w-12 overflow-hidden transition-transform group-hover:scale-105 sm:hidden">
             <img src={logoDesa} alt="Logo Desa Kebonratu" className="h-full w-full scale-150 object-contain" />
           </div>
-          <div className="hidden sm:block">
+          <div className="hidden">
             <div className="flex items-center gap-1.5">
               <h1 className={`whitespace-nowrap font-extrabold text-lg leading-tight tracking-tight ${isHome ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
                 DESA KEBONRATU

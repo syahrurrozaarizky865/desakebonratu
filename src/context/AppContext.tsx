@@ -106,9 +106,9 @@ interface AppContextType {
 }
 
 const DEFAULT_HERO_SETTINGS: HeroSlideConfig = {
-  badge: 'PEMERINTAH DESA KEBONRATU',
-  title: 'Kabar dan layanan warga Desa Kebonratu',
-  subtitle: 'Informasi kegiatan, pengumuman, serta layanan administrasi desa.',
+  badge: 'KEBONRATU GO — PLATFORM DIGITAL DESA',
+  title: 'Informasi desa, layanan warga, dan produk lokal dalam satu platform',
+  subtitle: 'Menghubungkan Profil Desa, BUMDesa, UMKM, katalog produk lokal, berita kegiatan, dan layanan informasi Desa Kebonratu.',
   image: HERO_IMAGE,
   buttonText: 'Berita terbaru'
 };
@@ -139,7 +139,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (typeof window === 'undefined') return DEFAULT_HERO_SETTINGS;
     try {
       const saved = window.localStorage.getItem('kebonratu-hero-settings');
-      return saved ? { ...DEFAULT_HERO_SETTINGS, ...JSON.parse(saved) } : DEFAULT_HERO_SETTINGS;
+      if (!saved) return DEFAULT_HERO_SETTINGS;
+      const parsed = JSON.parse(saved) as HeroSlideConfig;
+      // Upgrade the old factory copy while preserving administrator-made edits.
+      if (parsed.badge === 'PEMERINTAH DESA KEBONRATU' && parsed.title === 'Kabar dan layanan warga Desa Kebonratu') {
+        return { ...DEFAULT_HERO_SETTINGS, image: parsed.image || HERO_IMAGE };
+      }
+      return { ...DEFAULT_HERO_SETTINGS, ...parsed };
     } catch {
       return DEFAULT_HERO_SETTINGS;
     }

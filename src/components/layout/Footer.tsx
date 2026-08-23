@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { PROFIL_DESA_DATA } from '../../data/initialData';
 import logoDesa from '../../assets/images/logo.png';
+import logoUniba from '../../assets/images/uniba-logo.webp';
 
 export const Footer: React.FC = () => {
   const { setActivePage } = useApp();
@@ -46,7 +47,7 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed">
-              Portal Website Resmi Pemerintah Desa Kebonratu. Mewujudkan transparansi informasi publik, kemudahan pelayanan mandiri, serta pemberdayaan ekonomi masyarakat desa Banten.
+              Platform Digital Desa Kebonratu untuk informasi desa, layanan warga, BUMDesa, UMKM, dan katalog produk lokal.
             </p>
 
             <div className="pt-2 flex items-center gap-2 text-xs font-semibold text-emerald-400">
@@ -143,6 +144,16 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Copyright */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+          <div className="flex max-w-2xl items-center gap-3 text-center sm:text-left">
+            <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
+              <img
+                src={logoUniba}
+                alt="Logo Universitas Bina Bangsa"
+                className="h-full w-full scale-[1.04] object-cover"
+              />
+            </div>
+            <p>KEBONRATU GO dikembangkan melalui kolaborasi Pemerintah Desa Kebonratu, KKM Kelompok 27, dan PkM Tematik Dosen Universitas Bina Bangsa Tahun 2026.</p>
+          </div>
           <p>© {new Date().getFullYear()} Pemerintah Desa Kebonratu. Hak Cipta Dilindungi Undang-Undang.</p>
           <div className="flex items-center gap-4">
             <button onClick={() => handleNav('kontak')} className="hover:text-slate-300 transition-colors">

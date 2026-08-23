@@ -28,15 +28,15 @@ const MainContent: React.FC = () => {
   useEffect(() => {
     const pageMeta: Record<string, { title: string; description: string }> = {
       beranda: {
-        title: 'Beranda | Desa Kebonratu',
-        description: 'Website resmi Pemerintah Desa Kebonratu, Kecamatan Lebakwangi, Kabupaten Serang.'
+        title: 'KEBONRATU GO | Platform Digital Desa Kebonratu',
+        description: 'KEBONRATU GO adalah platform digital Desa Kebonratu untuk informasi desa, BUMDesa, UMKM, produk lokal, berita, dan layanan warga.'
       },
       profil: {
-        title: 'Profil Desa | Desa Kebonratu',
+        title: 'Profil Desa | KEBONRATU GO',
         description: 'Profil desa, sejarah, visi misi, dan informasi umum Desa Kebonratu.'
       },
       'bumdesa-umkm': {
-        title: 'BUMDesa & UMKM | Desa Kebonratu',
+        title: 'BUMDesa, UMKM & Katalog Produk | KEBONRATU GO',
         description: 'Informasi BUMDesa dan UMKM lokal Desa Kebonratu.'
       },
       pemerintahan: {

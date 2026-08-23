@@ -35,9 +35,9 @@ export const BerandaView: React.FC = () => {
   } = useApp();
 
   const safeHero = heroSettings ?? {
-    badge: 'PEMERINTAH DESA KEBONRATU',
-    title: 'Kabar dan layanan warga Desa Kebonratu',
-    subtitle: 'Informasi kegiatan, pengumuman, serta layanan administrasi desa.',
+    badge: 'KEBONRATU GO — PLATFORM DIGITAL DESA',
+    title: 'Informasi desa, layanan warga, dan produk lokal dalam satu platform',
+    subtitle: 'Menghubungkan Profil Desa, BUMDesa, UMKM, katalog produk lokal, berita kegiatan, dan layanan informasi Desa Kebonratu.',
     image: HERO_IMAGE,
     buttonText: 'Berita terbaru'
   };
@@ -77,6 +77,13 @@ export const BerandaView: React.FC = () => {
             >
               <FileText className="w-4 h-4" />
               <span>{safeHero.buttonText}</span>
+            </button>
+            <button
+              onClick={() => setActivePage('bumdesa-umkm')}
+              className="px-4 py-2.5 rounded-md border border-white/60 bg-emerald-600/80 hover:bg-emerald-600 text-white font-semibold text-sm flex items-center gap-2 transition-colors"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Jelajahi Produk UMKM</span>
             </button>
           </div></div>
           <div className="hidden lg:col-span-5">
