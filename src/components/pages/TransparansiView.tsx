@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { PROGRAM_RPJM_TERLAKSANA } from '../../data/initialData';
 import {
   Wallet,
   TrendingUp,
@@ -24,7 +23,7 @@ import {
 } from 'recharts';
 
 export const TransparansiView: React.FC = () => {
-  const { apbdesList } = useApp();
+  const { apbdesList, rpjmList } = useApp();
   const [selectedYear, setSelectedYear] = useState(2026);
 
   const formatRupiah = (num: number) => {
@@ -92,8 +91,8 @@ export const TransparansiView: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {PROGRAM_RPJM_TERLAKSANA.map((item) => (
-            <article key={item.program} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+          {rpjmList.map((item) => (
+            <article key={item.id} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
               <div className="flex items-start justify-between gap-3">
                 <p className="text-xs font-bold text-slate-900 dark:text-white">{item.program}</p>
                 <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">{item.bidang}</span>

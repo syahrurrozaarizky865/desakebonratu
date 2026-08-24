@@ -12,12 +12,13 @@ import {
   SuratRequest,
   PendudukItem,
   APBDesItem,
+  RPJMItem,
   BumdesItem,
   SambutanKepalaDesa,
   HeroSlideConfig,
   ToastMessage
 } from '../types';
-import { HERO_IMAGE } from '../data/initialData';
+import { HERO_IMAGE, PROGRAM_RPJM_TERLAKSANA } from '../data/initialData';
 import { supabase } from '../lib/supabase';
 
 // Production starts empty: all published content comes from Supabase.
@@ -49,6 +50,7 @@ interface AppContextType {
   suratList: SuratRequest[];
   pendudukList: PendudukItem[];
   apbdesList: APBDesItem[];
+  rpjmList: RPJMItem[];
   sambutan: SambutanKepalaDesa;
   heroSettings: HeroSlideConfig;
 
@@ -88,6 +90,9 @@ interface AppContextType {
   addAPBDes: (a: Omit<APBDesItem, 'id'>) => void;
   updateAPBDes: (a: APBDesItem) => void;
   deleteAPBDes: (id: string) => void;
+  addRPJM: (item: Omit<RPJMItem, 'id'>) => void;
+  updateRPJM: (item: RPJMItem) => void;
+  deleteRPJM: (id: string) => void;
 
   addPerangkat: (p: Omit<PerangkatDesa, 'id'>) => void;
   updatePerangkat: (p: PerangkatDesa) => void;
@@ -134,6 +139,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [suratList, setSuratList] = useState<SuratRequest[]>([]);
   const [pendudukList, setPendudukList] = useState<PendudukItem[]>([]);
   const [apbdesList, setApbdesList] = useState<APBDesItem[]>([]);
+  const [rpjmList, setRpjmList] = useState<RPJMItem[]>(() => supabase ? [] : PROGRAM_RPJM_TERLAKSANA);
   const [sambutan, setSambutan] = useState<SambutanKepalaDesa>(EMPTY_SAMBUTAN);
   const [heroSettings, setHeroSettings] = useState<HeroSlideConfig>(() => {
     if (typeof window === 'undefined') return DEFAULT_HERO_SETTINGS;
@@ -251,7 +257,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const tables: Array<[string, React.Dispatch<React.SetStateAction<any[]>>]> = [
         ['berita', setBeritaList], ['agenda', setAgendaList], ['pengumuman', setPengumumanList],
         ['perangkat_desa', setPerangkatList], ['galeri', setGaleriList], ['potensi', setPotensiList], ['bumdes', setBumdesList],
-        ['surat_requests', setSuratList], ['penduduk', setPendudukList], ['apbdes', setApbdesList]
+        ['surat_requests', setSuratList], ['penduduk', setPendudukList], ['apbdes', setApbdesList], ['rpjm_program', setRpjmList]
       ];
       await Promise.all(tables.map(async ([table, setData]) => {
         const { data, error } = await supabase.from(table).select('*');
@@ -282,6 +288,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       .on('postgres_changes', { event: '*', schema: 'public', table: 'surat_requests' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'penduduk' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'apbdes' }, () => void load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rpjm_program' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'sambutan_kepala_desa' }, () => void load())
       .subscribe();
 
@@ -478,6 +485,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast('info', 'Item APBDes dihapus');
   };
 
+  const addRPJM = (item: Omit<RPJMItem, 'id'>) => {
+    const newItem: RPJMItem = { ...item, id: 'rpjm-' + Date.now() };
+    setRpjmList((current) => [...current, newItem]);
+    if (supabase) void supabase.from('rpjm_program').insert(newItem).then(({ error }) => reportDatabaseError(error));
+    addToast('success', 'Program RPJM ditambahkan');
+  };
+
+  const updateRPJM = (item: RPJMItem) => {
+    setRpjmList((current) => current.map((entry) => entry.id === item.id ? item : entry));
+    if (supabase) void supabase.from('rpjm_program').update(item).eq('id', item.id).then(({ error }) => reportDatabaseError(error));
+    addToast('success', 'Program RPJM diperbarui');
+  };
+
+  const deleteRPJM = (id: string) => {
+    setRpjmList((current) => current.filter((entry) => entry.id !== id));
+    if (supabase) void supabase.from('rpjm_program').delete().eq('id', id).then(({ error }) => reportDatabaseError(error));
+    addToast('info', 'Program RPJM dihapus');
+  };
+
   const addPerangkat = (item: Omit<PerangkatDesa, 'id'>) => {
     const newItem: PerangkatDesa = { ...item, id: `pd-${Date.now()}` };
     setPerangkatList([...perangkatList, newItem]);
@@ -580,6 +606,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         suratList,
         pendudukList,
         apbdesList,
+        rpjmList,
         sambutan,
         heroSettings,
         selectedBerita,
@@ -608,6 +635,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addAPBDes,
         updateAPBDes,
         deleteAPBDes,
+        addRPJM,
+        updateRPJM,
+        deleteRPJM,
         addPerangkat,
         updatePerangkat,
         deletePerangkat,

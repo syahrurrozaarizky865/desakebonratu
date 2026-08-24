@@ -166,6 +166,14 @@ export interface APBDesItem {
   realisasi: number;
 }
 
+export interface RPJMItem {
+  id: string;
+  program: string;
+  bidang: string;
+  biaya: number;
+  status: string;
+}
+
 export interface ToastMessage {
   id: string;
   type: 'success' | 'error' | 'info';

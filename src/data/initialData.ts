@@ -520,18 +520,18 @@ export const INITIAL_APBDES: APBDesItem[] = [
 // Ringkasan matriks program pada Dokumen Perubahan RPJM Desa Kebonratu 2022-2029.
 // Nilai berikut adalah prakiraan biaya program dalam dokumen, bukan laporan kas atau LPJ APBDes.
 export const PROGRAM_RPJM_TERLAKSANA = [
-  { program: 'Penyelenggaraan Posyandu', bidang: 'Kesehatan', biaya: 720000000, status: 'Terlaksananya penyelenggaraan Posyandu' },
-  { program: 'Penyuluhan dan pelatihan bidang kesehatan', bidang: 'Kesehatan', biaya: 40000000, status: 'Terlaksananya penyuluhan dan pelatihan kesehatan' },
-  { program: 'Pemeliharaan jalan desa', bidang: 'Pekerjaan umum', biaya: 50000000, status: 'Terlaksananya pemeliharaan jalan desa' },
-  { program: 'Pemeliharaan jalan lingkungan / gang', bidang: 'Pekerjaan umum', biaya: 800000000, status: 'Terlaksananya pemeliharaan jalan lingkungan' },
-  { program: 'Pembangunan / rehabilitasi jalan desa', bidang: 'Pekerjaan umum', biaya: 1500000000, status: 'Terlaksananya pembangunan dan rehabilitasi jalan desa' },
-  { program: 'Peningkatan / pengerasan jalan lingkungan', bidang: 'Pekerjaan umum', biaya: 1000000000, status: 'Terlaksananya peningkatan jalan lingkungan' },
-  { program: 'Rehabilitasi prasarana jalan dan drainase', bidang: 'Pekerjaan umum', biaya: 1000000000, status: 'Terlaksananya rehabilitasi prasarana jalan desa' },
-  { program: 'Pemeliharaan sanitasi lingkungan', bidang: 'Pekerjaan umum', biaya: 160000000, status: 'Terlaksananya pemeliharaan sanitasi' },
-  { program: 'Pembangunan / peningkatan saluran irigasi', bidang: 'Pertanian', biaya: 500000000, status: 'Terlaksananya pembangunan saluran irigasi' },
-  { program: 'Penyelenggaraan festival kesenian dan keagamaan', bidang: 'Kemasyarakatan', biaya: 80000000, status: 'Terlaksananya festival kesenian dan keagamaan' },
-  { program: 'Pembentukan BUM Desa', bidang: 'Pemberdayaan ekonomi', biaya: 200000000, status: 'Terlaksananya pembentukan BUM Desa' },
-  { program: 'Pengadaan teknologi tepat guna untuk pengembangan pertanian', bidang: 'Pemberdayaan ekonomi', biaya: 25000000, status: 'Terlaksananya pengadaan teknologi tepat guna' }
+  { id: 'rpjm1', program: 'Penyelenggaraan Posyandu', bidang: 'Kesehatan', biaya: 720000000, status: 'Terlaksananya penyelenggaraan Posyandu' },
+  { id: 'rpjm2', program: 'Penyuluhan dan pelatihan bidang kesehatan', bidang: 'Kesehatan', biaya: 40000000, status: 'Terlaksananya penyuluhan dan pelatihan kesehatan' },
+  { id: 'rpjm3', program: 'Pemeliharaan jalan desa', bidang: 'Pekerjaan umum', biaya: 50000000, status: 'Terlaksananya pemeliharaan jalan desa' },
+  { id: 'rpjm4', program: 'Pemeliharaan jalan lingkungan / gang', bidang: 'Pekerjaan umum', biaya: 800000000, status: 'Terlaksananya pemeliharaan jalan lingkungan' },
+  { id: 'rpjm5', program: 'Pembangunan / rehabilitasi jalan desa', bidang: 'Pekerjaan umum', biaya: 1500000000, status: 'Terlaksananya pembangunan dan rehabilitasi jalan desa' },
+  { id: 'rpjm6', program: 'Peningkatan / pengerasan jalan lingkungan', bidang: 'Pekerjaan umum', biaya: 1000000000, status: 'Terlaksananya peningkatan jalan lingkungan' },
+  { id: 'rpjm7', program: 'Rehabilitasi prasarana jalan dan drainase', bidang: 'Pekerjaan umum', biaya: 1000000000, status: 'Terlaksananya rehabilitasi prasarana jalan desa' },
+  { id: 'rpjm8', program: 'Pemeliharaan sanitasi lingkungan', bidang: 'Pekerjaan umum', biaya: 160000000, status: 'Terlaksananya pemeliharaan sanitasi' },
+  { id: 'rpjm9', program: 'Pembangunan / peningkatan saluran irigasi', bidang: 'Pertanian', biaya: 500000000, status: 'Terlaksananya pembangunan saluran irigasi' },
+  { id: 'rpjm10', program: 'Penyelenggaraan festival kesenian dan keagamaan', bidang: 'Kemasyarakatan', biaya: 80000000, status: 'Terlaksananya festival kesenian dan keagamaan' },
+  { id: 'rpjm11', program: 'Pembentukan BUM Desa', bidang: 'Pemberdayaan ekonomi', biaya: 200000000, status: 'Terlaksananya pembentukan BUM Desa' },
+  { id: 'rpjm12', program: 'Pengadaan teknologi tepat guna untuk pengembangan pertanian', bidang: 'Pemberdayaan ekonomi', biaya: 25000000, status: 'Terlaksananya pengadaan teknologi tepat guna' }
 ];
 
 export const DEMO_STATS = {
