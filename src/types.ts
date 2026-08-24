@@ -174,6 +174,15 @@ export interface RPJMItem {
   status: string;
 }
 
+export interface RKPDesItem {
+  id: string;
+  tahun: number;
+  kegiatan: string;
+  bidang: string;
+  anggaran: number;
+  status: string;
+}
+
 export interface ToastMessage {
   id: string;
   type: 'success' | 'error' | 'info';

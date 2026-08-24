@@ -23,7 +23,7 @@ import {
 } from 'recharts';
 
 export const TransparansiView: React.FC = () => {
-  const { apbdesList, rpjmList } = useApp();
+  const { apbdesList, rpjmList, rkpdesList } = useApp();
   const [selectedYear, setSelectedYear] = useState(2026);
 
   const formatRupiah = (num: number) => {
@@ -36,6 +36,8 @@ export const TransparansiView: React.FC = () => {
 
   const pendapatanItems = apbdesList.filter((a) => a.kategori === 'Pendapatan' && a.tahun === selectedYear);
   const belanjaItems = apbdesList.filter((a) => a.kategori === 'Belanja' && a.tahun === selectedYear);
+  const rkpdesTahun = Array.from(new Set([2026, ...apbdesList.map((item) => item.tahun), ...rkpdesList.map((item) => item.tahun)])).sort((a, b) => b - a);
+  const rkpdesItems = rkpdesList.filter((item) => item.tahun === selectedYear);
 
   const totalPendapatanAnggaran = pendapatanItems.reduce((acc, curr) => acc + curr.anggaran, 0);
   const totalPendapatanRealisasi = pendapatanItems.reduce((acc, curr) => acc + curr.realisasi, 0);
@@ -104,6 +106,19 @@ export const TransparansiView: React.FC = () => {
         </div>
 
         <p className="text-[11px] text-slate-400 dark:text-slate-500">Sumber: Dokumen Perubahan RPJM Desa Kebonratu Tahun 2022-2029, matriks halaman 97-140.</p>
+      </section>
+
+      <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Rencana Kerja Tahunan</p>
+            <h2 className="mt-1 text-lg font-bold text-slate-900 dark:text-white">Kegiatan RKPDes Tahun {selectedYear}</h2>
+            <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500 dark:text-slate-400">RKPDes adalah rencana kerja Pemerintah Desa untuk satu tahun, sebagai penjabaran program RPJMDes per periode.</p>
+          </div>
+          <label className="text-xs font-bold text-slate-600 dark:text-slate-300">Tahun RKPDes<select value={selectedYear} onChange={(event) => setSelectedYear(Number(event.target.value))} className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-white">{rkpdesTahun.map((year) => <option key={year} value={year}>{year}</option>)}</select></label>
+        </div>
+
+        {rkpdesItems.length === 0 ? <div className="rounded-2xl border border-dashed border-sky-200 bg-sky-50/50 px-5 py-8 text-center text-xs text-slate-500 dark:border-sky-900 dark:bg-sky-950/20">Belum ada kegiatan RKPDes untuk tahun {selectedYear}.</div> : <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">{rkpdesItems.map((item) => <article key={item.id} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700"><div className="flex items-start justify-between gap-3"><p className="text-xs font-bold text-slate-900 dark:text-white">{item.kegiatan}</p><span className="shrink-0 rounded-full bg-sky-50 px-2 py-1 text-[10px] font-bold text-sky-700 dark:bg-sky-950 dark:text-sky-300">{item.bidang}</span></div><p className="mt-3 text-base font-black text-sky-600 dark:text-sky-400">{formatRupiah(item.anggaran)}</p><p className="mt-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">Status: {item.status}</p></article>)}</div>}
       </section>
 
       {/* Summary Cards */}

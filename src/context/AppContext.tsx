@@ -13,6 +13,7 @@ import {
   PendudukItem,
   APBDesItem,
   RPJMItem,
+  RKPDesItem,
   BumdesItem,
   SambutanKepalaDesa,
   HeroSlideConfig,
@@ -51,6 +52,7 @@ interface AppContextType {
   pendudukList: PendudukItem[];
   apbdesList: APBDesItem[];
   rpjmList: RPJMItem[];
+  rkpdesList: RKPDesItem[];
   sambutan: SambutanKepalaDesa;
   heroSettings: HeroSlideConfig;
 
@@ -93,6 +95,9 @@ interface AppContextType {
   addRPJM: (item: Omit<RPJMItem, 'id'>) => void;
   updateRPJM: (item: RPJMItem) => void;
   deleteRPJM: (id: string) => void;
+  addRKPDes: (item: Omit<RKPDesItem, 'id'>) => void;
+  updateRKPDes: (item: RKPDesItem) => void;
+  deleteRKPDes: (id: string) => void;
 
   addPerangkat: (p: Omit<PerangkatDesa, 'id'>) => void;
   updatePerangkat: (p: PerangkatDesa) => void;
@@ -140,6 +145,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [pendudukList, setPendudukList] = useState<PendudukItem[]>([]);
   const [apbdesList, setApbdesList] = useState<APBDesItem[]>([]);
   const [rpjmList, setRpjmList] = useState<RPJMItem[]>(() => supabase ? [] : PROGRAM_RPJM_TERLAKSANA);
+  const [rkpdesList, setRkpdesList] = useState<RKPDesItem[]>([]);
   const [sambutan, setSambutan] = useState<SambutanKepalaDesa>(EMPTY_SAMBUTAN);
   const [heroSettings, setHeroSettings] = useState<HeroSlideConfig>(() => {
     if (typeof window === 'undefined') return DEFAULT_HERO_SETTINGS;
@@ -257,7 +263,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const tables: Array<[string, React.Dispatch<React.SetStateAction<any[]>>]> = [
         ['berita', setBeritaList], ['agenda', setAgendaList], ['pengumuman', setPengumumanList],
         ['perangkat_desa', setPerangkatList], ['galeri', setGaleriList], ['potensi', setPotensiList], ['bumdes', setBumdesList],
-        ['surat_requests', setSuratList], ['penduduk', setPendudukList], ['apbdes', setApbdesList], ['rpjm_program', setRpjmList]
+        ['surat_requests', setSuratList], ['penduduk', setPendudukList], ['apbdes', setApbdesList], ['rpjm_program', setRpjmList], ['rkpdes_kegiatan', setRkpdesList]
       ];
       await Promise.all(tables.map(async ([table, setData]) => {
         const { data, error } = await supabase.from(table).select('*');
@@ -289,6 +295,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       .on('postgres_changes', { event: '*', schema: 'public', table: 'penduduk' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'apbdes' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rpjm_program' }, () => void load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rkpdes_kegiatan' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'sambutan_kepala_desa' }, () => void load())
       .subscribe();
 
@@ -504,6 +511,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast('info', 'Program RPJM dihapus');
   };
 
+  const addRKPDes = (item: Omit<RKPDesItem, 'id'>) => {
+    const newItem: RKPDesItem = { ...item, id: 'rkpdes-' + Date.now() };
+    setRkpdesList((current) => [...current, newItem]);
+    if (supabase) void supabase.from('rkpdes_kegiatan').insert(newItem).then(({ error }) => reportDatabaseError(error));
+    addToast('success', 'Kegiatan RKPDes ditambahkan');
+  };
+
+  const updateRKPDes = (item: RKPDesItem) => {
+    setRkpdesList((current) => current.map((entry) => entry.id === item.id ? item : entry));
+    if (supabase) void supabase.from('rkpdes_kegiatan').update(item).eq('id', item.id).then(({ error }) => reportDatabaseError(error));
+    addToast('success', 'Kegiatan RKPDes diperbarui');
+  };
+
+  const deleteRKPDes = (id: string) => {
+    setRkpdesList((current) => current.filter((entry) => entry.id !== id));
+    if (supabase) void supabase.from('rkpdes_kegiatan').delete().eq('id', id).then(({ error }) => reportDatabaseError(error));
+    addToast('info', 'Kegiatan RKPDes dihapus');
+  };
+
   const addPerangkat = (item: Omit<PerangkatDesa, 'id'>) => {
     const newItem: PerangkatDesa = { ...item, id: `pd-${Date.now()}` };
     setPerangkatList([...perangkatList, newItem]);
@@ -607,6 +633,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         pendudukList,
         apbdesList,
         rpjmList,
+        rkpdesList,
         sambutan,
         heroSettings,
         selectedBerita,
@@ -638,6 +665,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addRPJM,
         updateRPJM,
         deleteRPJM,
+        addRKPDes,
+        updateRKPDes,
+        deleteRKPDes,
         addPerangkat,
         updatePerangkat,
         deletePerangkat,

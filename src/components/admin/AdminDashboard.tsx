@@ -10,6 +10,7 @@ import {
   PotensiItem,
   APBDesItem,
   RPJMItem,
+  RKPDesItem,
   GaleriItem,
   PerangkatDesa
 } from '../../types';
@@ -50,11 +51,12 @@ type AdminTab =
   | 'bumdes'
   | 'apbdes'
   | 'rpjm'
+  | 'rkpdes'
   | 'galeri'
   | 'perangkat'
   | 'sambutan';
 
-type EditorType = 'berita' | 'agenda' | 'pengumuman' | 'penduduk' | 'potensi' | 'bumdes' | 'apbdes' | 'rpjm' | 'perangkat' | 'sambutan';
+type EditorType = 'berita' | 'agenda' | 'pengumuman' | 'penduduk' | 'potensi' | 'bumdes' | 'apbdes' | 'rpjm' | 'rkpdes' | 'perangkat' | 'sambutan';
 
 export const AdminDashboard: React.FC = () => {
   const {
@@ -92,6 +94,10 @@ export const AdminDashboard: React.FC = () => {
     addRPJM,
     updateRPJM,
     deleteRPJM,
+    rkpdesList,
+    addRKPDes,
+    updateRKPDes,
+    deleteRKPDes,
     perangkatList,
     addPerangkat,
     updatePerangkat,
@@ -162,6 +168,7 @@ export const AdminDashboard: React.FC = () => {
       bumdes: { nama: '', jenis_usaha: '', deskripsi: '', alamat: '', kontak: '', pemilik: '', gambar: '', latitude: '', longitude: '' },
       apbdes: { tahun: String(new Date().getFullYear()), kategori: 'Belanja', subKategori: '', anggaran: '0', realisasi: '0' },
       rpjm: { program: '', bidang: '', biaya: '0', status: '' },
+      rkpdes: { tahun: String(new Date().getFullYear()), kegiatan: '', bidang: '', anggaran: '0', status: 'Direncanakan' },
       perangkat: { nama: '', jabatan: '', nipd: '', pendidikan: '', foto: '', telepon: '', kategori: 'Pemerintah Desa' },
       sambutan: { nama: '', jabatan: '', periode: '', foto: '', judul: '', salam: '', isiPertama: '', isiKedua: '', visi: '' }
     };
@@ -269,6 +276,10 @@ export const AdminDashboard: React.FC = () => {
       if (type === 'rpjm') {
       const item = { program: data.program, bidang: data.bidang, biaya: Number(data.biaya), status: data.status };
       id ? updateRPJM({ ...item, id }) : addRPJM(item);
+    }
+      if (type === 'rkpdes') {
+      const item = { tahun: Number(data.tahun), kegiatan: data.kegiatan, bidang: data.bidang, anggaran: Number(data.anggaran), status: data.status };
+      id ? updateRKPDes({ ...item, id }) : addRKPDes(item);
     }
       if (type === 'perangkat') {
       const item = { nama: savedData.nama, jabatan: savedData.jabatan, nipd: savedData.nipd, pendidikan: savedData.pendidikan, foto: savedData.foto, telepon: savedData.telepon, kategori: savedData.kategori as PerangkatDesa['kategori'] };
@@ -532,6 +543,18 @@ export const AdminDashboard: React.FC = () => {
             >
               <ClipboardList className="w-4 h-4" />
               <span>Program RPJM Desa ({rpjmList.length})</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('rkpdes')}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'rkpdes'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              <ClipboardList className="w-4 h-4" />
+              <span>Kegiatan RKPDes ({rkpdesList.length})</span>
             </button>
 
             <button
@@ -996,6 +1019,19 @@ export const AdminDashboard: React.FC = () => {
             </div>
           )}
 
+          {activeTab === 'rkpdes' && (
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div><h3 className="text-base font-bold text-slate-900 dark:text-white">Kegiatan RKPDes Tahunan</h3><p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Rencana kerja pemerintah desa untuk satu tahun anggaran.</p></div>
+                <button onClick={() => openEditor('rkpdes')} className="shrink-0 px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-md hover:bg-emerald-700"><Plus className="w-4 h-4" /><span>Tambah Kegiatan</span></button>
+              </div>
+              <div className="space-y-2">
+                {rkpdesList.length === 0 && <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/50 px-6 py-12 text-center dark:border-emerald-900 dark:bg-emerald-950/20"><ClipboardList className="mx-auto h-9 w-9 text-emerald-600" /><p className="mt-3 text-sm font-bold text-slate-800 dark:text-white">Belum ada kegiatan RKPDes</p><button onClick={() => openEditor('rkpdes')} className="mt-4 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-700"><Plus className="mr-1 inline h-4 w-4" />Tambah kegiatan pertama</button></div>}
+                {rkpdesList.map((kegiatan) => <div key={kegiatan.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-xs dark:border-slate-700 dark:bg-slate-800/60"><div><span className="font-bold text-emerald-600">{kegiatan.tahun} · {kegiatan.bidang}</span><h4 className="font-bold text-slate-900 dark:text-white">{kegiatan.kegiatan}</h4><p className="text-[11px] text-slate-500">Rp {kegiatan.anggaran.toLocaleString('id-ID')} · {kegiatan.status}</p></div><div className="flex shrink-0 gap-1"><button onClick={() => openEditor('rkpdes', kegiatan)} aria-label={`Ubah ${kegiatan.kegiatan}`} className="p-2 text-sky-600 hover:text-sky-800"><Edit className="w-4 h-4" /></button><button onClick={() => deleteRKPDes(kegiatan.id)} aria-label={`Hapus ${kegiatan.kegiatan}`} className="p-2 text-rose-600 hover:text-rose-800"><Trash2 className="w-4 h-4" /></button></div></div>)}
+              </div>
+            </div>
+          )}
+
           {activeTab === 'bumdes' && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
               <div className="flex justify-between items-center gap-3">
@@ -1122,7 +1158,7 @@ export const AdminDashboard: React.FC = () => {
               <form noValidate onSubmit={saveEditor} className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900 space-y-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{editor.id ? 'Ubah' : 'Tambah'} {({ berita: 'Berita', agenda: 'Agenda', pengumuman: 'Pengumuman', penduduk: 'Data Warga', potensi: 'Potensi / UMKM', bumdes: 'BUMDes', apbdes: 'Pos APBDes', rpjm: 'Program RPJM Desa', perangkat: 'Anggota Struktur Desa', sambutan: 'Sambutan Kepala Desa' } as Record<EditorType, string>)[editor.type]}</h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{editor.id ? 'Ubah' : 'Tambah'} {({ berita: 'Berita', agenda: 'Agenda', pengumuman: 'Pengumuman', penduduk: 'Data Warga', potensi: 'Potensi / UMKM', bumdes: 'BUMDes', apbdes: 'Pos APBDes', rpjm: 'Program RPJM Desa', rkpdes: 'Kegiatan RKPDes', perangkat: 'Anggota Struktur Desa', sambutan: 'Sambutan Kepala Desa' } as Record<EditorType, string>)[editor.type]}</h3>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Lengkapi data asli sebelum disimpan.</p>
                   </div>
                   <button type="button" onClick={() => setEditor(null)} aria-label="Tutup" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><X className="h-5 w-5" /></button>
@@ -1180,6 +1216,8 @@ export const AdminDashboard: React.FC = () => {
                 {editor.type === 'apbdes' && <div className="grid grid-cols-2 gap-3"><input required type="number" value={editor.data.tahun} onChange={(e) => updateEditor('tahun', e.target.value)} placeholder="Tahun" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><select value={editor.data.kategori} onChange={(e) => updateEditor('kategori', e.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800"><option>Pendapatan</option><option>Belanja</option><option>Pembiayaan</option></select><input required value={editor.data.subKategori} onChange={(e) => updateEditor('subKategori', e.target.value)} placeholder="Uraian pos APBDes" className="col-span-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><input required min="0" type="number" value={editor.data.anggaran} onChange={(e) => updateEditor('anggaran', e.target.value)} placeholder="Anggaran" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><input required min="0" type="number" value={editor.data.realisasi} onChange={(e) => updateEditor('realisasi', e.target.value)} placeholder="Realisasi" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /></div>}
 
                 {editor.type === 'rpjm' && <div className="space-y-3"><input required value={editor.data.program} onChange={(e) => updateEditor('program', e.target.value)} placeholder="Nama program RPJM" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><div className="grid grid-cols-2 gap-3"><input required value={editor.data.bidang} onChange={(e) => updateEditor('bidang', e.target.value)} placeholder="Bidang" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><input required min="0" type="number" value={editor.data.biaya} onChange={(e) => updateEditor('biaya', e.target.value)} placeholder="Prakiraan biaya" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /></div><textarea required rows={3} value={editor.data.status} onChange={(e) => updateEditor('status', e.target.value)} placeholder="Status atau target pelaksanaan" className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /></div>}
+
+                {editor.type === 'rkpdes' && <div className="space-y-3"><div className="grid grid-cols-2 gap-3"><input required type="number" value={editor.data.tahun} onChange={(e) => updateEditor('tahun', e.target.value)} placeholder="Tahun RKPDes" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><input required value={editor.data.bidang} onChange={(e) => updateEditor('bidang', e.target.value)} placeholder="Bidang" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /></div><input required value={editor.data.kegiatan} onChange={(e) => updateEditor('kegiatan', e.target.value)} placeholder="Nama kegiatan RKPDes" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><div className="grid grid-cols-2 gap-3"><input required min="0" type="number" value={editor.data.anggaran} onChange={(e) => updateEditor('anggaran', e.target.value)} placeholder="Rencana anggaran" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><select value={editor.data.status} onChange={(e) => updateEditor('status', e.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800"><option>Direncanakan</option><option>Berjalan</option><option>Selesai</option></select></div></div>}
 
                 {editor.type === 'perangkat' && <><div className="grid grid-cols-2 gap-3"><input required value={editor.data.nama} onChange={(e) => updateEditor('nama', e.target.value)} placeholder="Nama lengkap" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><input required value={editor.data.jabatan} onChange={(e) => updateEditor('jabatan', e.target.value)} placeholder="Jabatan" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /></div><div className="grid grid-cols-2 gap-3"><select value={editor.data.kategori} onChange={(e) => updateEditor('kategori', e.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800"><option>Pemerintah Desa</option><option>BPD</option><option>LPM</option><option>Karang Taruna</option><option>PKK</option></select><input value={editor.data.telepon} onChange={(e) => updateEditor('telepon', e.target.value)} placeholder="Nomor telepon" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /></div><input value={editor.data.nipd} onChange={(e) => updateEditor('nipd', e.target.value)} placeholder="NIPD / NIK (opsional)" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><input required value={editor.data.pendidikan} onChange={(e) => updateEditor('pendidikan', e.target.value)} placeholder="Pendidikan terakhir" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" /><label className="block cursor-pointer rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/60 p-4 text-center dark:border-emerald-800 dark:bg-emerald-950/30">{editorPreview ? <img src={editorPreview} alt="Pratinjau foto perangkat" className="mx-auto max-h-36 rounded-lg object-contain" /> : <><Upload className="mx-auto mb-1 h-6 w-6 text-emerald-600" /><p className="text-sm font-bold text-emerald-800 dark:text-emerald-300">Pilih foto anggota</p><p className="mt-1 text-[11px] text-slate-500">JPG, PNG, atau WebP. Maksimal 2 MB.</p></>}<input required={!editor.data.foto} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => handleEditorFileChange(event.target.files?.[0])} /></label></>}
 
