@@ -510,11 +510,11 @@ export const BerandaView: React.FC = () => {
               onClick={() => setActivePage('galeri')}
               className="relative aspect-square rounded-2xl overflow-hidden group cursor-pointer shadow-md"
             >
-              <img
-                src={item.url}
-                alt={item.judul}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
+              {item.tipe === 'video' && !item.url.includes('youtube.com/embed') ? (
+                <video src={item.url} className="w-full h-full object-cover" muted preload="metadata" />
+              ) : (
+                <img src={item.url} alt={item.judul} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
               <div className="absolute bottom-3 left-3 right-3 text-white">
                 <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">

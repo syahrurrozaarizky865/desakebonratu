@@ -63,11 +63,11 @@ export const GaleriView: React.FC = () => {
             className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-2xl transition-all group cursor-pointer flex flex-col"
           >
             <div className="relative aspect-video overflow-hidden">
-              <img
-                src={item.url}
-                alt={item.judul}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
+              {item.tipe === 'video' && !item.url.includes('youtube.com/embed') ? (
+                <video src={item.url} className="w-full h-full object-cover" muted preload="metadata" />
+              ) : (
+                <img src={item.url} alt={item.judul} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              )}
               <div className="absolute inset-0 bg-slate-950/30 group-hover:bg-slate-950/10 transition-colors" />
 
               <span className="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">
@@ -110,13 +110,15 @@ export const GaleriView: React.FC = () => {
             </button>
 
             <div className="p-2 bg-black flex justify-center items-center min-h-[300px]">
-              {activeModalItem.tipe === 'video' ? (
+              {activeModalItem.tipe === 'video' && activeModalItem.url.includes('youtube.com/embed') ? (
                 <iframe
                   title={activeModalItem.judul}
                   src={activeModalItem.url}
                   className="w-full aspect-video rounded-xl"
                   allowFullScreen
                 />
+              ) : activeModalItem.tipe === 'video' ? (
+                <video src={activeModalItem.url} controls className="max-h-[70vh] w-full rounded-xl" preload="metadata" />
               ) : (
                 <img
                   src={activeModalItem.url}

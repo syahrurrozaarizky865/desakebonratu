@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import * as tus from 'tus-js-client';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
 import { DEMO_STATS, PROFIL_DESA_DATA } from '../../data/initialData';
@@ -138,6 +139,9 @@ export const AdminDashboard: React.FC = () => {
   const [showGaleriModal, setShowGaleriModal] = useState(false);
   const [galeriFile, setGaleriFile] = useState<File | null>(null);
   const [galeriPreview, setGaleriPreview] = useState('');
+  const galeriPreviewUrl = useRef<string | null>(null);
+  const [galeriUploadProgress, setGaleriUploadProgress] = useState<number | null>(null);
+  const [isSavingGaleri, setIsSavingGaleri] = useState(false);
   const [editingGaleri, setEditingGaleri] = useState<GaleriItem | null>(null);
   const [galeriForm, setGaleriForm] = useState({
     judul: '',
@@ -297,6 +301,8 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const openGaleriModal = () => {
+    if (galeriPreviewUrl.current) URL.revokeObjectURL(galeriPreviewUrl.current);
+    galeriPreviewUrl.current = null;
     setEditingGaleri(null);
     setGaleriFile(null);
     setGaleriPreview('');
@@ -305,6 +311,8 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const openGaleriEditor = (item: GaleriItem) => {
+    if (galeriPreviewUrl.current) URL.revokeObjectURL(galeriPreviewUrl.current);
+    galeriPreviewUrl.current = null;
     setEditingGaleri(item);
     setGaleriFile(null);
     setGaleriPreview(item.url);
@@ -314,48 +322,97 @@ export const AdminDashboard: React.FC = () => {
 
   const handleGaleriFileChange = (file?: File) => {
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      addToast('error', 'Pilih file gambar berformat JPG, PNG, atau WebP.');
+    const acceptedMediaTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm', 'video/quicktime', 'video/ogg'];
+    if (!acceptedMediaTypes.includes(file.type)) {
+      addToast('error', 'Pilih JPG, PNG, WebP, MP4, WebM, MOV, atau OGV.');
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      addToast('error', 'Ukuran foto maksimal 2 MB.');
+    if (file.size > 500 * 1024 * 1024) {
+      addToast('error', 'Ukuran file maksimal 500 MB.');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setGaleriFile(file);
-      setGaleriPreview(String(reader.result));
-      if (!galeriForm.judul) {
-        setGaleriForm((current) => ({ ...current, judul: file.name.replace(/\.[^/.]+$/, '') }));
+    if (galeriPreviewUrl.current) URL.revokeObjectURL(galeriPreviewUrl.current);
+    const previewUrl = URL.createObjectURL(file);
+    galeriPreviewUrl.current = previewUrl;
+    setGaleriFile(file);
+    setGaleriPreview(previewUrl);
+    if (!galeriForm.judul) setGaleriForm((current) => ({ ...current, judul: file.name.replace(/\.[^/.]+$/, '') }));
+  };
+
+  const uploadGaleriMedia = async (file: File): Promise<string | null> => {
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Media tidak dapat disimpan.');
+      return null;
+    }
+    const extension = file.name.split('.').pop()?.toLowerCase() || 'bin';
+    const path = `galeri/${new Date().getFullYear()}/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${extension}`;
+    if (file.size <= 6 * 1024 * 1024) {
+      const { error } = await supabase.storage.from('desa-media').upload(path, file, { contentType: file.type, upsert: false });
+      if (error) {
+        addToast('error', `Unggah media gagal: ${error.message}`);
+        return null;
       }
-    };
-    reader.readAsDataURL(file);
+      return supabase.storage.from('desa-media').getPublicUrl(path).data.publicUrl;
+    }
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      addToast('error', 'Sesi login berakhir. Silakan masuk kembali sebelum mengunggah video.');
+      return null;
+    }
+    const storageHost = new URL(import.meta.env.VITE_SUPABASE_URL).hostname.replace('.supabase.co', '.storage.supabase.co');
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const upload = new tus.Upload(file, {
+          endpoint: `https://${storageHost}/storage/v1/upload/resumable`,
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          headers: { authorization: `Bearer ${session.access_token}`, 'x-upsert': 'false' },
+          uploadDataDuringCreation: true,
+          removeFingerprintOnSuccess: true,
+          metadata: { bucketName: 'desa-media', objectName: path, contentType: file.type, cacheControl: '3600' },
+          chunkSize: 6 * 1024 * 1024,
+          onError: reject,
+          onProgress: (uploaded, total) => setGaleriUploadProgress(Math.round((uploaded / total) * 100)),
+          onSuccess: () => resolve()
+        });
+        upload.start();
+      });
+      return supabase.storage.from('desa-media').getPublicUrl(path).data.publicUrl;
+    } catch (error) {
+      addToast('error', `Unggah video gagal: ${error instanceof Error ? error.message : 'terjadi gangguan koneksi.'}`);
+      return null;
+    }
   };
 
   const handleGaleriSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!galeriPreview) {
-      addToast('error', 'Pilih foto yang akan diunggah terlebih dahulu.');
+    if (isSavingGaleri || !galeriPreview) {
+      if (!galeriPreview) addToast('error', 'Pilih foto atau video yang akan diunggah terlebih dahulu.');
       return;
     }
     if (!galeriForm.judul.trim() || !galeriForm.album.trim() || !galeriForm.deskripsi.trim()) {
       addToast('error', 'Lengkapi judul, album, dan deskripsi foto.');
       return;
     }
-    const uploadedUrl = galeriFile ? await uploadImage(galeriFile) : galeriPreview;
-    if (!uploadedUrl) return;
-    const item = {
+    setIsSavingGaleri(true);
+    setGaleriUploadProgress(galeriFile && galeriFile.size > 6 * 1024 * 1024 ? 0 : null);
+    try {
+      const uploadedUrl = galeriFile ? await uploadGaleriMedia(galeriFile) : galeriPreview;
+      if (!uploadedUrl) return;
+      const item = {
       judul: galeriForm.judul.trim(),
-      tipe: 'foto',
+      tipe: galeriFile?.type.startsWith('video/') ? 'video' as const : editingGaleri?.tipe ?? 'foto' as const,
       url: uploadedUrl,
       kategori: galeriForm.kategori,
       album: galeriForm.album.trim(),
       tanggal: new Date().toLocaleDateString('id-ID'),
       deskripsi: galeriForm.deskripsi.trim()
-    };
-    editingGaleri ? updateGaleri({ ...item, id: editingGaleri.id }) : addGaleri(item);
-    setShowGaleriModal(false);
+      };
+      editingGaleri ? updateGaleri({ ...item, id: editingGaleri.id }) : addGaleri(item);
+      setShowGaleriModal(false);
+    } finally {
+      setIsSavingGaleri(false);
+      setGaleriUploadProgress(null);
+    }
   };
 
   const handleHeroFileChange = (file?: File) => {
@@ -1079,7 +1136,7 @@ export const AdminDashboard: React.FC = () => {
                     key={g.id}
                     className="relative aspect-video rounded-xl overflow-hidden group border border-slate-200 dark:border-slate-800"
                   >
-                    <img src={g.url} alt={g.judul} className="w-full h-full object-cover" />
+                    {g.tipe === 'video' ? <video src={g.url} className="w-full h-full object-cover" muted preload="metadata" /> : <img src={g.url} alt={g.judul} className="w-full h-full object-cover" />}
                     <button
                       onClick={() => openGaleriEditor(g)}
                       aria-label={`Edit ${g.judul}`}
@@ -1117,8 +1174,8 @@ export const AdminDashboard: React.FC = () => {
               <form onSubmit={handleGaleriSubmit} className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900 space-y-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{editingGaleri ? 'Ubah Foto Galeri' : 'Unggah Foto Galeri'}</h3>
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Foto yang dipilih akan menjadi foto galeri, bukan gambar contoh.</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{editingGaleri ? 'Ubah Media Galeri' : 'Unggah Foto atau Video'}</h3>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">File akan disimpan ke galeri desa. Batas ukuran file 500 MB.</p>
                   </div>
                   <button type="button" onClick={() => setShowGaleriModal(false)} aria-label="Tutup" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
                     <X className="h-5 w-5" />
@@ -1127,17 +1184,18 @@ export const AdminDashboard: React.FC = () => {
 
                 <label className="block cursor-pointer rounded-2xl border-2 border-dashed border-emerald-300 bg-emerald-50/60 p-5 text-center dark:border-emerald-800 dark:bg-emerald-950/30">
                   {galeriPreview ? (
-                    <img src={galeriPreview} alt="Pratinjau foto yang dipilih" className="mx-auto max-h-48 rounded-xl object-contain" />
+                    galeriFile?.type.startsWith('video/') || editingGaleri?.tipe === 'video' ? <video src={galeriPreview} controls className="mx-auto max-h-48 rounded-xl" /> : <img src={galeriPreview} alt="Pratinjau foto yang dipilih" className="mx-auto max-h-48 rounded-xl object-contain" />
                   ) : (
                     <>
                       <Upload className="mx-auto mb-2 h-7 w-7 text-emerald-600" />
-                      <p className="text-sm font-bold text-emerald-800 dark:text-emerald-300">Pilih foto dari perangkat</p>
-                      <p className="mt-1 text-[11px] text-slate-500">JPG, PNG, atau WebP. Maksimal 2 MB.</p>
+                      <p className="text-sm font-bold text-emerald-800 dark:text-emerald-300">Pilih foto atau video dari perangkat</p>
+                      <p className="mt-1 text-[11px] text-slate-500">JPG, PNG, WebP, MP4, WebM, MOV, atau OGV. Maksimal 500 MB.</p>
                     </>
                   )}
-                  <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => handleGaleriFileChange(event.target.files?.[0])} />
+                  <input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime,video/ogg" className="sr-only" onChange={(event) => handleGaleriFileChange(event.target.files?.[0])} />
                 </label>
                 {galeriFile && <p className="text-xs text-slate-500">File: {galeriFile.name}</p>}
+                {galeriUploadProgress !== null && <p className="text-xs font-bold text-emerald-700">Mengunggah video: {galeriUploadProgress}%</p>}
 
                 <input required value={galeriForm.judul} onChange={(event) => setGaleriForm({ ...galeriForm, judul: event.target.value })} placeholder="Judul foto" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" />
                 <div className="grid grid-cols-2 gap-3">
@@ -1149,7 +1207,7 @@ export const AdminDashboard: React.FC = () => {
                 <textarea required rows={3} value={galeriForm.deskripsi} onChange={(event) => setGaleriForm({ ...galeriForm, deskripsi: event.target.value })} placeholder="Deskripsi singkat foto" className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800" />
                 <div className="flex justify-end gap-3 pt-1">
                   <button type="button" onClick={() => setShowGaleriModal(false)} className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 dark:border-slate-700 dark:text-slate-300">Batal</button>
-                  <button type="submit" className="rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-700">{editingGaleri ? 'Simpan Perubahan' : 'Simpan Foto'}</button>
+                  <button type="submit" disabled={isSavingGaleri} className="rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">{isSavingGaleri ? 'Mengunggah...' : editingGaleri ? 'Simpan Perubahan' : 'Simpan Media'}</button>
                 </div>
               </form>
             </div>

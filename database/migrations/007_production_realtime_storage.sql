@@ -41,9 +41,9 @@ $$;
 
 -- One public bucket for website images. Only authenticated staff may upload.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('desa-media', 'desa-media', true, 2097152, array['image/jpeg', 'image/png', 'image/webp'])
-on conflict (id) do update set public = true, file_size_limit = 2097152,
-  allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp'];
+values ('desa-media', 'desa-media', true, 524288000, array['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm', 'video/quicktime', 'video/ogg'])
+on conflict (id) do update set public = true, file_size_limit = 524288000,
+  allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm', 'video/quicktime', 'video/ogg'];
 
 drop policy if exists "media publik dibaca" on storage.objects;
 drop policy if exists "petugas unggah media" on storage.objects;
