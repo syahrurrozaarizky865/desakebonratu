@@ -280,7 +280,8 @@ export const AdminDashboard: React.FC = () => {
     }
       if (type === 'rkpdes') {
       const item = { tahun: Number(data.tahun), kegiatan: data.kegiatan, bidang: data.bidang, anggaran: Number(data.anggaran), status: data.status };
-      id ? updateRKPDes({ ...item, id }) : addRKPDes(item);
+      const isSaved = id ? await updateRKPDes({ ...item, id }) : await addRKPDes(item);
+      if (!isSaved) return;
     }
       if (type === 'perangkat') {
       const item = { nama: savedData.nama, jabatan: savedData.jabatan, nipd: savedData.nipd, pendidikan: savedData.pendidikan, foto: savedData.foto, telepon: savedData.telepon, kategori: savedData.kategori as PerangkatDesa['kategori'] };

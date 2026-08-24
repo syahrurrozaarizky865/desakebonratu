@@ -95,9 +95,9 @@ interface AppContextType {
   addRPJM: (item: Omit<RPJMItem, 'id'>) => Promise<boolean>;
   updateRPJM: (item: RPJMItem) => Promise<boolean>;
   deleteRPJM: (id: string) => Promise<boolean>;
-  addRKPDes: (item: Omit<RKPDesItem, 'id'>) => void;
-  updateRKPDes: (item: RKPDesItem) => void;
-  deleteRKPDes: (id: string) => void;
+  addRKPDes: (item: Omit<RKPDesItem, 'id'>) => Promise<boolean>;
+  updateRKPDes: (item: RKPDesItem) => Promise<boolean>;
+  deleteRKPDes: (id: string) => Promise<boolean>;
 
   addPerangkat: (p: Omit<PerangkatDesa, 'id'>) => void;
   updatePerangkat: (p: PerangkatDesa) => void;
@@ -538,23 +538,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return true;
   };
 
-  const addRKPDes = (item: Omit<RKPDesItem, 'id'>) => {
+  const addRKPDes = async (item: Omit<RKPDesItem, 'id'>) => {
     const newItem: RKPDesItem = { ...item, id: 'rkpdes-' + Date.now() };
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Kegiatan RKPDes tidak dapat disimpan.');
+      return false;
+    }
+    const { error } = await supabase.from('rkpdes_kegiatan').insert(newItem);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setRkpdesList((current) => [...current, newItem]);
-    if (supabase) void supabase.from('rkpdes_kegiatan').insert(newItem).then(({ error }) => reportDatabaseError(error));
     addToast('success', 'Kegiatan RKPDes ditambahkan');
+    return true;
   };
 
-  const updateRKPDes = (item: RKPDesItem) => {
+  const updateRKPDes = async (item: RKPDesItem) => {
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Perubahan kegiatan RKPDes tidak dapat disimpan.');
+      return false;
+    }
+    const { error } = await supabase.from('rkpdes_kegiatan').update(item).eq('id', item.id);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setRkpdesList((current) => current.map((entry) => entry.id === item.id ? item : entry));
-    if (supabase) void supabase.from('rkpdes_kegiatan').update(item).eq('id', item.id).then(({ error }) => reportDatabaseError(error));
     addToast('success', 'Kegiatan RKPDes diperbarui');
+    return true;
   };
 
-  const deleteRKPDes = (id: string) => {
+  const deleteRKPDes = async (id: string) => {
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Kegiatan RKPDes tidak dapat dihapus.');
+      return false;
+    }
+    const { error } = await supabase.from('rkpdes_kegiatan').delete().eq('id', id);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setRkpdesList((current) => current.filter((entry) => entry.id !== id));
-    if (supabase) void supabase.from('rkpdes_kegiatan').delete().eq('id', id).then(({ error }) => reportDatabaseError(error));
     addToast('info', 'Kegiatan RKPDes dihapus');
+    return true;
   };
 
   const addPerangkat = (item: Omit<PerangkatDesa, 'id'>) => {
