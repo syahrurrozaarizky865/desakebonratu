@@ -33,7 +33,7 @@ export const PROFIL_DESA_DATA = {
   jumlahPenduduk: 4532,
   jumlahKK: 1373,
   jumlahDusun: 6,
-  jumlahRT: 11,
+  jumlahRT: 10,
   jumlahRW: 5,
   sumberData: 'Dokumen Perubahan RPJM Desa Kebonratu Tahun 2022-2029',
   tahunData: 2025,
