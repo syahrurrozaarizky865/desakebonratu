@@ -378,7 +378,12 @@ export const AdminDashboard: React.FC = () => {
       });
       return supabase.storage.from('desa-media').getPublicUrl(path).data.publicUrl;
     } catch (error) {
-      addToast('error', `Unggah video gagal: ${error instanceof Error ? error.message : 'terjadi gangguan koneksi.'}`);
+      const message = error instanceof Error ? error.message : '';
+      if (/maximum size exceeded|status\s*413|response code:\s*413/i.test(message)) {
+        addToast('error', 'Unggah video ditolak karena batas ukuran bucket Supabase belum 500 MB. Jalankan migrasi 014_allow_gallery_video_uploads.sql di Supabase SQL Editor, lalu coba lagi.');
+      } else {
+        addToast('error', `Unggah video gagal: ${message || 'terjadi gangguan koneksi.'}`);
+      }
       return null;
     }
   };

@@ -19,10 +19,11 @@ This contains everything you need to run your app locally.
 
 ## Supabase production setup
 
-Run migrations in the SQL Editor in this order: `001_supabase_schema.sql`,
-`003_enable_realtime.sql`, `006_sambutan_kepala_desa.sql`, then
-`007_production_realtime_storage.sql`, `008_public_services_and_audit.sql`, and
-`009_manage_rpjm_program.sql`, then `010_manage_rkpdes_kegiatan.sql`.
+Run the numbered migrations in `database/migrations` in the SQL Editor (skip
+the optional seed migrations when entering real data yourself). In particular,
+after the initial storage migration, run
+`014_allow_gallery_video_uploads.sql`. It raises the existing `desa-media`
+bucket limit to 500 MB and permits MP4, WebM, MOV, and OGV uploads.
 Migration `002_seed_initial_data.sql` is
 optional and should be skipped when you will enter real data yourself.
 
