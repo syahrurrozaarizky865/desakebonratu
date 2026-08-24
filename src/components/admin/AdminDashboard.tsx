@@ -275,7 +275,8 @@ export const AdminDashboard: React.FC = () => {
     }
       if (type === 'rpjm') {
       const item = { program: data.program, bidang: data.bidang, biaya: Number(data.biaya), status: data.status };
-      id ? updateRPJM({ ...item, id }) : addRPJM(item);
+      const isSaved = id ? await updateRPJM({ ...item, id }) : await addRPJM(item);
+      if (!isSaved) return;
     }
       if (type === 'rkpdes') {
       const item = { tahun: Number(data.tahun), kegiatan: data.kegiatan, bidang: data.bidang, anggaran: Number(data.anggaran), status: data.status };

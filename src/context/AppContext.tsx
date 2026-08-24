@@ -92,9 +92,9 @@ interface AppContextType {
   addAPBDes: (a: Omit<APBDesItem, 'id'>) => void;
   updateAPBDes: (a: APBDesItem) => void;
   deleteAPBDes: (id: string) => void;
-  addRPJM: (item: Omit<RPJMItem, 'id'>) => void;
-  updateRPJM: (item: RPJMItem) => void;
-  deleteRPJM: (id: string) => void;
+  addRPJM: (item: Omit<RPJMItem, 'id'>) => Promise<boolean>;
+  updateRPJM: (item: RPJMItem) => Promise<boolean>;
+  deleteRPJM: (id: string) => Promise<boolean>;
   addRKPDes: (item: Omit<RKPDesItem, 'id'>) => void;
   updateRKPDes: (item: RKPDesItem) => void;
   deleteRKPDes: (id: string) => void;
@@ -492,23 +492,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast('info', 'Item APBDes dihapus');
   };
 
-  const addRPJM = (item: Omit<RPJMItem, 'id'>) => {
+  const addRPJM = async (item: Omit<RPJMItem, 'id'>) => {
     const newItem: RPJMItem = { ...item, id: 'rpjm-' + Date.now() };
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Program RPJM tidak dapat disimpan.');
+      return false;
+    }
+    const { error } = await supabase.from('rpjm_program').insert(newItem);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setRpjmList((current) => [...current, newItem]);
-    if (supabase) void supabase.from('rpjm_program').insert(newItem).then(({ error }) => reportDatabaseError(error));
     addToast('success', 'Program RPJM ditambahkan');
+    return true;
   };
 
-  const updateRPJM = (item: RPJMItem) => {
+  const updateRPJM = async (item: RPJMItem) => {
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Perubahan program RPJM tidak dapat disimpan.');
+      return false;
+    }
+    const { error } = await supabase.from('rpjm_program').update(item).eq('id', item.id);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setRpjmList((current) => current.map((entry) => entry.id === item.id ? item : entry));
-    if (supabase) void supabase.from('rpjm_program').update(item).eq('id', item.id).then(({ error }) => reportDatabaseError(error));
     addToast('success', 'Program RPJM diperbarui');
+    return true;
   };
 
-  const deleteRPJM = (id: string) => {
+  const deleteRPJM = async (id: string) => {
+    if (!supabase) {
+      addToast('error', 'Supabase belum terhubung. Program RPJM tidak dapat dihapus.');
+      return false;
+    }
+    const { error } = await supabase.from('rpjm_program').delete().eq('id', id);
+    if (error) {
+      reportDatabaseError(error);
+      return false;
+    }
     setRpjmList((current) => current.filter((entry) => entry.id !== id));
-    if (supabase) void supabase.from('rpjm_program').delete().eq('id', id).then(({ error }) => reportDatabaseError(error));
     addToast('info', 'Program RPJM dihapus');
+    return true;
   };
 
   const addRKPDes = (item: Omit<RKPDesItem, 'id'>) => {
